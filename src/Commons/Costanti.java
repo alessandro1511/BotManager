@@ -10,4 +10,5 @@ public class Costanti {
 	public static final String FILE_SQUADRE = "Fantacalcio";
 	public static final String FILE_STATISTICHE = "Statistiche";
 	public static final String FILE_QUOTAZIONI = "Quotazioni";
+
 }
