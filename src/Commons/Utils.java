@@ -14,6 +14,16 @@ import Dao.SquadraDTO;
 
 public class Utils {
 
+	/**
+	 * Connessione File.
+	 *
+	 * @param path
+	 * @param fileName
+	 *
+	 * @return
+	 *
+	 * @throws Exception
+	 */
 	public static String connectionFile(String path, String fileName) throws Exception
 	{
 		//cerco il file
