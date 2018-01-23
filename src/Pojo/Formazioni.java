@@ -35,39 +35,43 @@ public class Formazioni {
 				ArrayList<GiocatoreDTO> rosaTemp = new ArrayList<GiocatoreDTO>(squadra.getRosa());
 				for (ArrayList<String> m : modulo.getValue().getModulo())
 				{
-					GiocatoreDTO f = new GiocatoreDTO();
-					int index = -1;
-					for (String ruolo: m )
-					{
-						for (GiocatoreDTO g : rosaTemp)
+					try{
+						GiocatoreDTO f = new GiocatoreDTO();
+						int index = -1;
+						for (String ruolo: m )
 						{
-							try{
-								//System.out.println("Giocatore: " + g.getNome() + " Ruolo: " + g.getRuoli() + " Valutazione: " + g.getValutazione());
+							for (GiocatoreDTO g : rosaTemp)
+							{
+								try{
+									//System.out.println("Giocatore: " + g.getNome() + " Ruolo: " + g.getRuoli() + " Valutazione: " + g.getValutazione());
 
-								//Scorrendo tutta la rosa, cerco il giocatore migliore in quel ruolo
-								if (g.getRuoli().contains(ruolo) && (f.getValutazione() == null || (g.getValutazione() != null && g.getValutazione() > f.getValutazione())))
-								{
-									f.setNome(g.getNome());
-									f.getRuoli().add(ruolo);
-									f.setSquadra(g.getSquadra());
-									f.setMediaFantacalcio(g.getMediaFantacalcio());
-									f.setValutazione(g.getValutazione());
-									index = rosaTemp.indexOf(g);
+									//Scorrendo tutta la rosa, cerco il giocatore migliore in quel ruolo
+									if (g.getRuoli().contains(ruolo) && (f.getValutazione() == null || (g.getValutazione() != null && g.getValutazione() > f.getValutazione())))
+									{
+										f.setNome(g.getNome());
+										f.getRuoli().add(ruolo);
+										f.setSquadra(g.getSquadra());
+										f.setMediaFantacalcio(g.getMediaFantacalcio());
+										f.setValutazione(g.getValutazione());
+										index = rosaTemp.indexOf(g);
+									}
+								} catch (Exception e){
+									System.out.println("Errore Giocatore: " + g.getNome());
 								}
-							} catch (Exception e){
-								System.out.println("Errore Giocatore: " + g.getNome());
 							}
 						}
-					}
-					if (index != -1)
-					{
-						formazione.getFormazione().add(f);
-						rosaTemp.remove(index);
-						if (countTitolari > 0)
+						if (index != -1)
 						{
-							formazione.setValutazione(formazione.getValutazione() + f.getValutazione());
-							countTitolari--;
+							formazione.getFormazione().add(f);
+							rosaTemp.remove(index);
+							if (countTitolari > 0)
+							{
+								formazione.setValutazione(formazione.getValutazione() + (f != null && f.getValutazione() != null ? f.getValutazione().doubleValue() : 0 ));
+								countTitolari--;
+							}
 						}
+					} catch (Exception e){
+						System.out.println("Squadra: " + squadra.getNome() + " errore Ruolo: " + m);
 					}
 				}
 
