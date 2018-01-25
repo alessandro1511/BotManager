@@ -27,10 +27,10 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<SquadraDTO> creaStatistiche(ArrayList<SquadraDTO> squadre) throws Exception
+	public static ArrayList<SquadraDTO> creaStatistiche(ArrayList<SquadraDTO> squadre, String path) throws Exception
 	{
 		System.out.println("Caricamento file delle statistiche");
-		String pathFile = Utils.connectionFile(Costanti.PATH, Costanti.FILE_STATISTICHE);
+		String pathFile = Utils.connectionFile(path, Costanti.FILE_STATISTICHE);
         FileInputStream inputStream = new FileInputStream(pathFile);
 
         System.out.println("Caricamento statistiche per ogni giocatore");

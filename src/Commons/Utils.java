@@ -11,8 +11,32 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Dao.GiocatoreDTO;
 import Dao.SquadraDTO;
+import Views.Master;
 
 public class Utils {
+
+	/**
+	 * Se non contiene il file jar vuol dire che sono su Eclipse, quindi metto un path fisso.
+	 * <p>
+	 * Altrimenti sto eseguendo il jar e quindi dal path rimuovo il file.
+	 *
+	 * @return path
+	 */
+	public static String calcolaPath(){
+		String path = null;
+		try{
+			path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			if (!path.contains(".jar")){
+				path = "/home/alessandro.cappelli/Documents/FC/";
+			} else {
+				path = path.substring(0, path.lastIndexOf('/'));
+			}
+			System.out.println("Path di riferimento bis: " + path);
+		} catch(Exception e){
+			System.out.println("Errore path");
+		}
+		return path;
+	}
 
 	/**
 	 * Connessione File.
@@ -65,10 +89,10 @@ public class Utils {
 	 *
 	 * @throws Exception
 	 */
-	public static Workbook connectionWorkbook() throws Exception
+	public static Workbook connectionWorkbook(String path) throws Exception
 	{
 		//cerco il file del fantacalcio
-		File dir = new File(Costanti.PATH);
+		File dir = new File(path);
 		File[] foundFiles = dir.listFiles(new FilenameFilter() {
 		    public boolean accept(File dir, String name) {
 		        return name.startsWith(Costanti.FILE_SQUADRE);

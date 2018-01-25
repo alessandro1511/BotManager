@@ -26,10 +26,10 @@ public class Quotazioni {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<SquadraDTO> creaQuotazioni(ArrayList<SquadraDTO> squadre) throws Exception
+	public static ArrayList<SquadraDTO> creaQuotazioni(ArrayList<SquadraDTO> squadre, String path) throws Exception
 	{
 		System.out.println("Caricamento file quotazioni");
-		String pathFile = Utils.connectionFile(Costanti.PATH, Costanti.FILE_QUOTAZIONI);
+		String pathFile = Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI);
 	    FileInputStream inputStream = new FileInputStream(pathFile);
 
 	    System.out.println("Caricamento delle quotazioni per ogni giocatori");

@@ -19,7 +19,7 @@ public class Grafica {
 	 *
 	 * @param squadre
 	 */
-	public static void inferfaccia(ArrayList<SquadraDTO> squadre)
+	public static void inferfaccia(ArrayList<SquadraDTO> squadre, String path)
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -27,8 +27,8 @@ public class Grafica {
         while (true) {
         	try{
         		Utils.CLS();
-	        	File fileStatistiche = new File(Utils.connectionFile(Costanti.PATH, Costanti.FILE_STATISTICHE));
-	        	File fileQuotazioni = new File(Utils.connectionFile(Costanti.PATH, Costanti.FILE_QUOTAZIONI));
+	        	File fileStatistiche = new File(Utils.connectionFile(path, Costanti.FILE_STATISTICHE));
+	        	File fileQuotazioni = new File(Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI));
 
 	        	int index = 0;
 	        	for (SquadraDTO squadra : squadre) { System.out.println(index + " - " + squadra.getNome()); index++; }

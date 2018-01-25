@@ -19,7 +19,8 @@ public abstract class Master {
 
     public static ArrayList<SquadraDTO> squadre = null;
     public static Map<String, ModuliDTO> moduli = null;
-    public static Workbook workbook;
+    public static Workbook workbook = null;
+    public static String path = null;
 
     public static void main(String[] args) throws Exception
     {
@@ -36,21 +37,24 @@ public abstract class Master {
     {
     	System.out.println("Caricamento programma in corso... (sistema: " + System.getProperty("os.name") + ")");
 
-    	workbook = Utils.connectionWorkbook();
+    	path = Utils.calcolaPath();
+
+    	workbook = Utils.connectionWorkbook(path);
 
     	squadre = Squadre.creaSquadre();
 
 		moduli = Moduli.createModuli();
 
-		//infoSerieA = InfoSerieA.createInfo();
-		//squadre = Giocatori.createGiocatori(squadre);
+		squadre = Quotazioni.creaQuotazioni(squadre, path);
 
-		squadre = Quotazioni.creaQuotazioni(squadre);
-
-		squadre = Statistiche.creaStatistiche(squadre);
+		squadre = Statistiche.creaStatistiche(squadre, path);
 
     	squadre = Formazioni.creaFormazioni(moduli, squadre);
 
-    	Grafica.inferfaccia(squadre);
+    	Grafica.inferfaccia(squadre, path);
     }
+
+    public static String getPath() {
+		return path;
+	}
 }
