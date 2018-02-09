@@ -216,7 +216,7 @@ public class Utils {
 			res = res + System.lineSeparator();
 
 			//righe da inserire
-	    	for (int g = 0; g < 23; g++)
+	    	for (int g = 0; g < 36; g++)
 	    	{
 	    		for (int i=0; i < squadra.getFormazioni().size(); i++)
 	    		{
