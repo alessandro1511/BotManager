@@ -23,7 +23,7 @@ public class Moduli extends Master {
 	 */
 	public static Map<String, ModuliDTO> createModuli() throws Exception
 	{
-		System.out.println("Inizio creazione e suddivisione dei moduli");
+		System.out.println("Creazione e suddivisione dei moduli");
 
 		Map<String, ModuliDTO> moduli = new HashMap<String, ModuliDTO>();
         for (Sheet sheet : workbook)
@@ -67,7 +67,7 @@ public class Moduli extends Master {
 			}
 		}
 
-        System.out.println("Fine creazione e suddivisione dei moduli");
+        System.out.println("Moduli caricati");
 	    return moduli;
 	}
 }

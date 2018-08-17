@@ -11,7 +11,6 @@ import Dao.ModuliDTO;
 import Dao.SquadraDTO;
 import Pojo.Formazioni;
 import Pojo.Moduli;
-import Pojo.Quotazioni;
 import Pojo.Squadre;
 import Pojo.Statistiche;
 
@@ -29,7 +28,7 @@ public abstract class Master {
     	}
     	catch (Throwable e)
     	{
-    		System.out.println("Errore programma");
+    		System.out.println("Errore programma: " + e);
     	}
     }
 
@@ -45,11 +44,13 @@ public abstract class Master {
 
 		moduli = Moduli.createModuli();
 
-		squadre = Quotazioni.creaQuotazioni(squadre, path);
+		squadre = Statistiche.creaQuotazioni(squadre, path);
 
 		squadre = Statistiche.creaStatistiche(squadre, path);
 
-    	squadre = Formazioni.creaFormazioni(moduli, squadre);
+		squadre = Statistiche.votiGiornate(squadre, path);
+
+    	//squadre = Formazioni.creaFormazioni(moduli, squadre);
 
     	Grafica.inferfaccia(squadre, path);
     }

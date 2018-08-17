@@ -24,7 +24,7 @@ public class Squadre extends Master{
 	 */
 	public static ArrayList<SquadraDTO> creaSquadre() throws Exception
 	{
-		System.out.println("Inizio caricamento squadre");
+		System.out.println("Caricamento squadre");
 
 		ArrayList<SquadraDTO> squadre = new ArrayList<SquadraDTO>();
         for (Sheet sheet : workbook)
@@ -61,7 +61,7 @@ public class Squadre extends Master{
         }
         workbook.close();
 
-        System.out.println("Fine caricamento squadre");
+        System.out.println("Squadre caricate");
 		return squadre;
 	}
 }

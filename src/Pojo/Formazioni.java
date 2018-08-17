@@ -19,7 +19,7 @@ public class Formazioni {
 	 * @return ArrayList - delle quadre con la formazione ideale
 	 *
 	 * @throws Exception
-	 */
+
 	public static ArrayList<SquadraDTO> creaFormazioni(Map<String, ModuliDTO> moduli, ArrayList<SquadraDTO> squadre) throws Exception
 	{
 		System.out.println("Creazione di tutte le formazioni possibili e ordinamento da quella fiu' forte a quella meno");
@@ -102,4 +102,5 @@ public class Formazioni {
 		System.out.println("Formazioni create e ordinate correttamente");
 		return squadre;
 	}
+	*/
 }
