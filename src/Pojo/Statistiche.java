@@ -23,8 +23,7 @@ public class Statistiche {
 	 * Cerco il file delle Quotazioni e carico tutte le quotazioni per ogni
 	 * giocatore.
 	 *
-	 * @param squadre
-	 *            - array delle squadre
+	 * @param squadre - array delle squadre
 	 *
 	 * @return ArrayList - array delle squadre aggiornato
 	 *
@@ -82,13 +81,10 @@ public class Statistiche {
 	}
 
 	/**
-	 * Cerco il file delle Statistiche e per ogni giocatore verifico i suoi
-	 * dati.
+	 * Cerco il file delle Statistiche e per ogni giocatore verifico i suoi dati.
 	 *
-	 * @param squadre
-	 *            - array delle squadre
-	 * @param path
-	 *            file
+	 * @param squadre - array delle squadre
+	 * @param path    file
 	 *
 	 * @return array delle squadre aggiornato
 	 *
@@ -148,13 +144,11 @@ public class Statistiche {
 	}
 
 	/**
-	 * Cerco tutti i file dei voti e calcolo giornata per giornata le
-	 * statistiche del giocatore.
+	 * Cerco tutti i file dei voti e calcolo giornata per giornata le statistiche
+	 * del giocatore.
 	 *
-	 * @param squadre
-	 *            - array delle squadre
-	 * @param path
-	 *            file
+	 * @param squadre - array delle squadre
+	 * @param path    file
 	 *
 	 * @return array delle squadre aggiornato
 	 *
@@ -167,105 +161,105 @@ public class Statistiche {
 
 		int indexFileVoti = 0;
 		for (String pathFile : pathFiles) {
-
+			indexFileVoti++;
 			FileInputStream inputStream = new FileInputStream(pathFile);
 
 			System.out.println("Caricamento voti: " + pathFile);
 			Workbook workbook = new XSSFWorkbook(inputStream);
 			Sheet sheet = workbook.getSheetAt(0);
 
-			try {
-				for (SquadraDTO squadra : squadre) {
+			for (SquadraDTO squadra : squadre) {
+				for (GiocatoreDTO g : squadra.getRosa()) {
+					Voti voti = new Voti();
 					Iterator<Row> iterator = sheet.iterator();
 					while (iterator.hasNext()) {
 						Row nextRow = iterator.next();
 						Iterator<Cell> cellIterator = nextRow.cellIterator();
-
 						int indexCol = 0;
-						int indexGiocatore = -1;
-						boolean findGiocatore = false;
-						Voti voti = new Voti();
 						while (cellIterator.hasNext()) {
 							Cell cell = cellIterator.next();
 							cell.setCellType(CellType.STRING);
 							indexCol++;
-							if (indexCol == 3) {
-								// nome giocatore
-								for (GiocatoreDTO g : squadra.getRosa()) {
-									if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
-										indexGiocatore = squadra.getRosa().indexOf(g);
-										findGiocatore = true;
-										break;
-									}
+							try {
+								// nella colonna 3 cerco il nome del giocatore
+								if (indexCol == 3 && !g.getNome().isEmpty()
+										&& g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
+
+									cell = cellIterator.next(); // colum 4
+									cell.setCellType(CellType.STRING);
+									if ((String.valueOf(cell.getStringCellValue())).contains("*"))
+										voti.setVoto(Double.valueOf(6));
+									else
+										voti.setVoto(Double.valueOf(cell.getStringCellValue()));
+
+									cell = cellIterator.next(); // colum 5
+									cell.setCellType(CellType.STRING);
+									voti.setGolFatti(Integer.valueOf(cell.getStringCellValue()));
+
+									cell = cellIterator.next(); // colum 6
+									cell.setCellType(CellType.STRING);
+									voti.setGolSubiti(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 7
+									cell.setCellType(CellType.STRING);
+									voti.setRigoreParato(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 8
+									cell.setCellType(CellType.STRING);
+									voti.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 9
+									cell.setCellType(CellType.STRING);
+									voti.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 10
+									cell.setCellType(CellType.STRING);
+									voti.setAutogol(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 11
+									cell.setCellType(CellType.STRING);
+									voti.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 12
+									cell.setCellType(CellType.STRING);
+									voti.setEspulsioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 13
+									cell.setCellType(CellType.STRING);
+									voti.setAssist(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 14
+									cell.setCellType(CellType.STRING);
+									voti.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 15
+									cell.setCellType(CellType.STRING);
+									voti.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									cell = cellIterator.next(); // colum 16
+									cell.setCellType(CellType.STRING);
+									voti.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()).intValue());
+
+									// calcolo della valutazione
+									Double valutazione = voti.getVoto() + voti.getGolFatti() * 3 - voti.getGolSubiti()
+											+ voti.getRigoreParato() * 3 - voti.getRigoreSbagalto() * 3
+											+ voti.getRigoreFatto() * 3 - voti.getAutogol() * 2
+											- (double) voti.getAmmunizioni() / 2 - voti.getEspulsioni()
+											+ voti.getAssist() + voti.getAssistDaFermo() + voti.getGolDellaVittoria()
+											+ (double) voti.getGolDelPareggio() / 2;
+									voti.setValutazione(valutazione);
 								}
-							} else if (indexCol == 4 && findGiocatore) {
-								// voto giornata
-								if ((String.valueOf(cell.getStringCellValue())).contains("*"))
-									voti.setVoto(Double.valueOf(6));
-								else
-									voti.setVoto(Double.valueOf(cell.getStringCellValue()));
-							} else if (indexCol == 5 && findGiocatore) {
-								// gol fatti
-								voti.setGolFatti(Integer.valueOf(cell.getStringCellValue()));
-							} else if (indexCol == 6 && findGiocatore) {
-								// gol subiti
-								voti.setGolSubiti(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 7 && findGiocatore) {
-								// rigore parato
-								voti.setRigoreParato(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 8 && findGiocatore) {
-								// rigore sbagliato
-								voti.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 9 && findGiocatore) {
-								// rigore fatto
-								voti.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 10 && findGiocatore) {
-								// autogol
-								voti.setAutogol(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 11 && findGiocatore) {
-								// ammunizioni
-								voti.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 12 && findGiocatore) {
-								// espulsioni
-								voti.setEspulsioni(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 13 && findGiocatore) {
-								// assist
-								voti.setAssist(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 14 && findGiocatore) {
-								// assist da fermo
-								voti.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 15 && findGiocatore) {
-								// gol della vittoria
-								voti.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()).intValue());
-							} else if (indexCol == 16 && findGiocatore) {
-								// gol del pareggio
-								voti.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()).intValue());
+							} catch (Exception e) {
+								System.out.println("Errore voti giocatore: " + g.getNome());
 							}
 						}
-
-						// calcolo valutazione giocatore
-						if (indexGiocatore != -1 && voti.getVoto() != null
-								&& squadra.getRosa().get(indexGiocatore).getQuotazioneAttuale() != null) {
-
-							Double valutazione = voti.getVoto() + voti.getGolFatti() * 3 - voti.getGolSubiti()
-									+ voti.getRigoreParato() * 3 - voti.getRigoreSbagalto() * 3
-									+ voti.getRigoreFatto() * 3 - voti.getAutogol() * 2
-									- (double) voti.getAmmunizioni() / 2 - voti.getEspulsioni() + voti.getAssist()
-									+ voti.getAssistDaFermo() + voti.getGolDellaVittoria()
-									+ (double) voti.getGolDelPareggio() / 2;
-
-							voti.setValutazione(valutazione);
-							squadra.getRosa().get(indexGiocatore).addVoti(voti);
-						}
 					}
+					g.addVoti(voti);
 				}
-			} catch (Exception e) {
-				System.out.println("Errore: " + e);
 			}
 
 			workbook.close();
 			inputStream.close();
-			indexFileVoti++;
 		}
 
 		System.out.println("Voti per ogni giocatore caricate");

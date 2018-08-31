@@ -15,7 +15,7 @@ public class Voti {
 	private Integer assistDaFermo = null;
 	private Integer golDellaVittoria = null;
 	private Integer golDelPareggio = null;
-	private Double valutazione = null;
+	private Double valutazione = Double.valueOf(0);
 
 	public Double getVoto() {
 		return voto;
