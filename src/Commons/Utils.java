@@ -172,9 +172,9 @@ public class Utils {
 				if (!g.getVoti().isEmpty()) {
 					String votiTotali = "";
 					for (Voti v : g.getVoti()) {
-						votiTotali = votiTotali + v.getValutazione().doubleValue() + " ";
+						votiTotali = votiTotali + StringUtils.rightPad((v.getValutazione().doubleValue() == 0d ? "" : v.getValutazione().doubleValue()) + " ", 5, " ");
 					}
-					res = res + "| " + StringUtils.rightPad(votiTotali, 10, " ") + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad(votiTotali, 100, " ") + System.lineSeparator();
 				} else {
 					res = res + "| " + StringUtils.rightPad("", 5, " ") + System.lineSeparator();
 				}
