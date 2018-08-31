@@ -13,8 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Commons.Costanti;
 import Commons.Utils;
-import Dao.GiocatoreDTO;
-import Dao.SquadraDTO;
+import Dao.Giocatore;
+import Dao.Squadra;
 import Dao.Voti;
 
 public class Statistiche {
@@ -29,7 +29,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<SquadraDTO> creaQuotazioni(ArrayList<SquadraDTO> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> creaQuotazioni(ArrayList<Squadra> squadre, String path) throws Exception {
 		System.out.println("Caricamento file quotazioni");
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI);
 		FileInputStream inputStream = new FileInputStream(pathFile);
@@ -38,7 +38,7 @@ public class Statistiche {
 		Workbook workbook = new XSSFWorkbook(inputStream);
 		Sheet firstSheet = workbook.getSheetAt(0);
 
-		for (SquadraDTO squadra : squadre) {
+		for (Squadra squadra : squadre) {
 			Iterator<Row> iterator = firstSheet.iterator();
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
@@ -52,7 +52,7 @@ public class Statistiche {
 					indexCol++;
 					if (indexCol == 3) // nome giocatore
 					{
-						for (GiocatoreDTO g : squadra.getRosa()) {
+						for (Giocatore g : squadra.getRosa()) {
 							if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
 								indexGiocatore = squadra.getRosa().indexOf(g);
 								findGiocatore = true;
@@ -90,7 +90,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<SquadraDTO> creaStatistiche(ArrayList<SquadraDTO> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> creaStatistiche(ArrayList<Squadra> squadre, String path) throws Exception {
 		System.out.println("Caricamento file delle statistiche");
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_STATISTICHE);
 		FileInputStream inputStream = new FileInputStream(pathFile);
@@ -100,7 +100,7 @@ public class Statistiche {
 		Sheet sheet = workbook.getSheetAt(0);
 
 		try {
-			for (SquadraDTO squadra : squadre) {
+			for (Squadra squadra : squadre) {
 				Iterator<Row> iterator = sheet.iterator();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();
@@ -114,7 +114,7 @@ public class Statistiche {
 						indexCol++;
 						if (indexCol == 3) {
 							// nome giocatore
-							for (GiocatoreDTO g : squadra.getRosa()) {
+							for (Giocatore g : squadra.getRosa()) {
 								if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
 									indexGiocatore = squadra.getRosa().indexOf(g);
 									findGiocatore = true;
@@ -154,7 +154,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<SquadraDTO> votiGiornate(ArrayList<SquadraDTO> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> votiGiornate(ArrayList<Squadra> squadre, String path) throws Exception {
 
 		System.out.println("Caricamento file dei voti");
 		ArrayList<String> pathFiles = Utils.connectionFiles(path, Costanti.FILE_VOTI);
@@ -168,8 +168,8 @@ public class Statistiche {
 			Workbook workbook = new XSSFWorkbook(inputStream);
 			Sheet sheet = workbook.getSheetAt(0);
 
-			for (SquadraDTO squadra : squadre) {
-				for (GiocatoreDTO g : squadra.getRosa()) {
+			for (Squadra squadra : squadre) {
+				for (Giocatore g : squadra.getRosa()) {
 					Voti voti = new Voti();
 					Iterator<Row> iterator = sheet.iterator();
 					while (iterator.hasNext()) {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
-import Dao.SquadraDTO;
+import Dao.Squadra;
 import Views.Master;
 
 public class Grafica {
@@ -19,7 +19,7 @@ public class Grafica {
 	 *
 	 * @param squadre
 	 */
-	public static void inferfaccia(ArrayList<SquadraDTO> squadre, String path) {
+	public static void inferfaccia(ArrayList<Squadra> squadre, String path) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -32,7 +32,7 @@ public class Grafica {
 				File fileQuotazioni = new File(Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI));
 
 				int index = 0;
-				for (SquadraDTO squadra : squadre) {
+				for (Squadra squadra : squadre) {
 					System.out.println(index + " - " + squadra.getNome());
 					index++;
 				}

@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import Dao.ModuliDTO;
+import Dao.Modulo;
 import Views.Master;
 
 public class Moduli extends Master {
@@ -21,53 +21,43 @@ public class Moduli extends Master {
 	 *
 	 * @throws Exception
 	 */
-	public static Map<String, ModuliDTO> createModuli() throws Exception
-	{
+	public static Map<String, Modulo> createModuli() throws Exception {
 		System.out.println("Creazione e suddivisione dei moduli");
 
-		Map<String, ModuliDTO> moduli = new HashMap<String, ModuliDTO>();
-        for (Sheet sheet : workbook)
-        {
-        	if (sheet.getSheetName().toUpperCase().startsWith("MODULI"))
-        	{
-	        	Iterator<Row> iterator = sheet.iterator();
-		        while (iterator.hasNext())
-		        {
-		            Row nextRow = iterator.next();
-		            Iterator<Cell> cellIterator = nextRow.cellIterator();
-		            int indexCol = 0;
-		            String nomeModulo = null;
-		            ModuliDTO modulo = new ModuliDTO();
-		            while (cellIterator.hasNext())
-		            {
-		                Cell cell = cellIterator.next();
-		                indexCol++;
+		Map<String, Modulo> moduli = new HashMap<String, Modulo>();
+		for (Sheet sheet : workbook) {
+			if (sheet.getSheetName().toUpperCase().startsWith("MODULI")) {
+				Iterator<Row> iterator = sheet.iterator();
+				while (iterator.hasNext()) {
+					Row nextRow = iterator.next();
+					Iterator<Cell> cellIterator = nextRow.cellIterator();
+					int indexCol = 0;
+					String nomeModulo = null;
+					Modulo modulo = new Modulo();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+						indexCol++;
 
-		                if (indexCol == 1)
-		                {
-		                	nomeModulo = String.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue());	//nome modulo
-		                }
-		                else
-		                {
-		                	ArrayList<String> ruoli = new ArrayList<String>();
-		                	if (!cell.getStringCellValue().toUpperCase().trim().contains(","))
-		                	{
-		                		ruoli.add(cell.getStringCellValue().toUpperCase().trim());	// inserisco un solo ruolo
-		                	}
-		                	else
-		                	{
-		                		for (String r : cell.getStringCellValue().toUpperCase().trim().split(","))
-		                		ruoli.add(r.toUpperCase().trim());												// inserisco tutti i possibili ruoli
-		                	}
-		                	modulo.getModulo().add(ruoli);	// aggiungo tutti i ruoli per la posizione
-		                }
-		            }
-					moduli.put(nomeModulo, modulo);	// aggiungo nome e modulo
-		        }
+						if (indexCol == 1) {
+							nomeModulo = String.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()); // nome
+																												// modulo
+						} else {
+							ArrayList<String> ruoli = new ArrayList<String>();
+							if (!cell.getStringCellValue().toUpperCase().trim().contains(",")) {
+								ruoli.add(cell.getStringCellValue().toUpperCase().trim()); // inserisco un solo ruolo
+							} else {
+								for (String r : cell.getStringCellValue().toUpperCase().trim().split(","))
+									ruoli.add(r.toUpperCase().trim()); // inserisco tutti i possibili ruoli
+							}
+							modulo.getModulo().add(ruoli); // aggiungo tutti i ruoli per la posizione
+						}
+					}
+					moduli.put(nomeModulo, modulo); // aggiungo nome e modulo
+				}
 			}
 		}
 
-        System.out.println("Moduli caricati");
-	    return moduli;
+		System.out.println("Moduli caricati");
+		return moduli;
 	}
 }

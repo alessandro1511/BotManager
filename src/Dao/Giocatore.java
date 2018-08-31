@@ -2,7 +2,7 @@ package Dao;
 
 import java.util.ArrayList;
 
-public class GiocatoreDTO {
+public class Giocatore {
 
 	private String nome;
 	private ArrayList<String> ruoli = new ArrayList<>();
@@ -68,7 +68,7 @@ public class GiocatoreDTO {
 		this.voti = voti;
 	}
 
-	public void addVoti(Voti voti){
+	public void addVoti(Voti voti) {
 		this.voti.add(voti);
 	}
 

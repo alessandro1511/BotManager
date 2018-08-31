@@ -10,16 +10,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Dao.GiocatoreDTO;
-import Dao.SquadraDTO;
+import Dao.Giocatore;
+import Dao.Squadra;
 import Dao.Voti;
 import Views.Master;
 
 public class Utils {
 
 	/**
-	 * Se non contiene il file jar vuol dire che sono su Eclipse, quindi metto
-	 * un path fisso.
+	 * Se non contiene il file jar vuol dire che sono su Eclipse, quindi metto un
+	 * path fisso.
 	 * <p>
 	 * Altrimenti sto eseguendo il jar e quindi dal path rimuovo il file.
 	 *
@@ -136,7 +136,7 @@ public class Utils {
 			System.out.println();
 	}
 
-	public static String printRosa(SquadraDTO squadra) {
+	public static String printRosa(Squadra squadra) {
 		try {
 			String res = "";
 			res = "ROSA: " + squadra.getNome() + System.lineSeparator();
@@ -146,7 +146,7 @@ public class Utils {
 					+ StringUtils.rightPad("Voti.", 5, " ") + System.lineSeparator();
 
 			res = res + StringUtils.rightPad("-", 203, "-") + System.lineSeparator();
-			for (GiocatoreDTO g : squadra.getRosa()) {
+			for (Giocatore g : squadra.getRosa()) {
 				res = res + StringUtils.rightPad(g.getNome(), 20, " ");
 				String ruoli = "";
 				for (String r : g.getRuoli())
@@ -172,7 +172,9 @@ public class Utils {
 				if (!g.getVoti().isEmpty()) {
 					String votiTotali = "";
 					for (Voti v : g.getVoti()) {
-						votiTotali = votiTotali + StringUtils.rightPad((v.getValutazione().doubleValue() == 0d ? "" : v.getValutazione().doubleValue()) + " ", 5, " ");
+						votiTotali = StringUtils.rightPad(
+								(v.getValutazione().doubleValue() == 0d ? "" : v.getValutazione().doubleValue()) + " ",
+								5, " ") + votiTotali;
 					}
 					res = res + "| " + StringUtils.rightPad(votiTotali, 100, " ") + System.lineSeparator();
 				} else {
