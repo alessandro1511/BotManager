@@ -15,7 +15,8 @@ public class Voti {
 	private Integer assistDaFermo = null;
 	private Integer golDellaVittoria = null;
 	private Integer golDelPareggio = null;
-	private Double valutazione = Double.valueOf(0);
+	private Double valutazione = null;
+	private String squadraAvversaria = null;
 
 	public Double getVoto() {
 		return voto;
@@ -127,6 +128,14 @@ public class Voti {
 
 	public void setValutazione(Double valutazione) {
 		this.valutazione = valutazione;
+	}
+
+	public String getSquadraAvversaria() {
+		return squadraAvversaria;
+	}
+
+	public void setSquadraAvversaria(String squadraAvversaria) {
+		this.squadraAvversaria = squadraAvversaria;
 	}
 
 }

@@ -8,6 +8,7 @@ public class Costanti {
 
 	public static final String FILE_SQUADRE = "Fantacalcio";
 	public static final String FILE_STATISTICHE = "Statistiche";
+	public static final String FILE_CALENDARIO = "Calendario";
 	public static final String FILE_VOTI = "Voti";
 	public static final String FILE_QUOTAZIONI = "Quotazioni";
 }

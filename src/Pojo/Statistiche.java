@@ -159,9 +159,9 @@ public class Statistiche {
 		System.out.println("Caricamento file dei voti");
 		ArrayList<String> pathFiles = Utils.connectionFiles(path, Costanti.FILE_VOTI);
 
-		int indexFileVoti = 0;
+		int numeroGiornata = 0;
 		for (String pathFile : pathFiles) {
-			indexFileVoti++;
+			numeroGiornata++;
 			FileInputStream inputStream = new FileInputStream(pathFile);
 
 			System.out.println("Caricamento voti: " + pathFile);
@@ -170,7 +170,7 @@ public class Statistiche {
 
 			for (Squadra squadra : squadre) {
 				for (Giocatore g : squadra.getRosa()) {
-					Voti voti = new Voti();
+					Voti voto = new Voti();
 					Iterator<Row> iterator = sheet.iterator();
 					while (iterator.hasNext()) {
 						Row nextRow = iterator.next();
@@ -188,81 +188,101 @@ public class Statistiche {
 									cell = cellIterator.next(); // colum 4
 									cell.setCellType(CellType.STRING);
 									if ((String.valueOf(cell.getStringCellValue())).contains("*"))
-										voti.setVoto(Double.valueOf(6));
+										voto.setVoto(Double.valueOf(6));
 									else
-										voti.setVoto(Double.valueOf(cell.getStringCellValue()));
+										voto.setVoto(Double.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 5
 									cell.setCellType(CellType.STRING);
-									voti.setGolFatti(Integer.valueOf(cell.getStringCellValue()));
+									voto.setGolFatti(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 6
 									cell.setCellType(CellType.STRING);
-									voti.setGolSubiti(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolSubiti(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 7
 									cell.setCellType(CellType.STRING);
-									voti.setRigoreParato(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreParato(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 8
 									cell.setCellType(CellType.STRING);
-									voti.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 9
 									cell.setCellType(CellType.STRING);
-									voti.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 10
 									cell.setCellType(CellType.STRING);
-									voti.setAutogol(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAutogol(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 11
 									cell.setCellType(CellType.STRING);
-									voti.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 12
 									cell.setCellType(CellType.STRING);
-									voti.setEspulsioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setEspulsioni(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 13
 									cell.setCellType(CellType.STRING);
-									voti.setAssist(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAssist(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 14
 									cell.setCellType(CellType.STRING);
-									voti.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 15
 									cell.setCellType(CellType.STRING);
-									voti.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									cell = cellIterator.next(); // colum 16
 									cell.setCellType(CellType.STRING);
-									voti.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()).intValue());
 
 									// calcolo della valutazione
-									Double valutazione = voti.getVoto() + voti.getGolFatti() * 3 - voti.getGolSubiti()
-											+ voti.getRigoreParato() * 3 - voti.getRigoreSbagalto() * 3
-											+ voti.getRigoreFatto() * 3 - voti.getAutogol() * 2
-											- (double) voti.getAmmunizioni() / 2 - voti.getEspulsioni()
-											+ voti.getAssist() + voti.getAssistDaFermo() + voti.getGolDellaVittoria()
-											+ (double) voti.getGolDelPareggio() / 2;
-									voti.setValutazione(valutazione);
+									Double valutazione = voto.getVoto() + voto.getGolFatti() * 3 - voto.getGolSubiti()
+											+ voto.getRigoreParato() * 3 - voto.getRigoreSbagalto() * 3
+											+ voto.getRigoreFatto() * 3 - voto.getAutogol() * 2
+											- (double) voto.getAmmunizioni() / 2 - voto.getEspulsioni()
+											+ voto.getAssist() + voto.getAssistDaFermo() + voto.getGolDellaVittoria()
+											+ (double) voto.getGolDelPareggio() / 2;
+									voto.setValutazione(valutazione);
+
+									// calcolo la squadra avversaria
+									voto.setSquadraAvversaria(
+											calcolaSquadraAvversaria(numeroGiornata, g.getSquadra(), path));
 								}
 							} catch (Exception e) {
 								System.out.println("Errore voti giocatore: " + g.getNome());
 							}
 						}
 					}
-					g.addVoti(voti);
+					g.addVoti(voto);
 				}
 			}
-
 			workbook.close();
 			inputStream.close();
 		}
 
 		System.out.println("Voti per ogni giocatore caricate");
 		return squadre;
+	}
+
+	private static String calcolaSquadraAvversaria(int numeroGiornata, String squadra, String path) throws Exception {
+		System.out.println("Caricamento file del calendario");
+		String pathFile = Utils.connectionFile(path, Costanti.FILE_CALENDARIO);
+		FileInputStream inputStream = new FileInputStream(pathFile);
+
+		System.out.println("Caricamento calendario: " + pathFile);
+		Workbook workbook = new XSSFWorkbook(inputStream);
+		Sheet sheet = workbook.getSheetAt(0);
+		try {
+
+
+		} catch (Exception e) {
+			System.out.println("Errore calcolo calendario");
+		}
+		return null;
 	}
 }

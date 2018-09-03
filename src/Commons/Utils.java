@@ -173,7 +173,7 @@ public class Utils {
 					String votiTotali = "";
 					for (Voti v : g.getVoti()) {
 						votiTotali = StringUtils.rightPad(
-								(v.getValutazione().doubleValue() == 0d ? "" : v.getValutazione().doubleValue()) + " ",
+								(v.getValutazione() == null ? "" : v.getValutazione().doubleValue()) + " ",
 								5, " ") + votiTotali;
 					}
 					res = res + "| " + StringUtils.rightPad(votiTotali, 100, " ") + System.lineSeparator();
