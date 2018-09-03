@@ -198,47 +198,47 @@ public class Statistiche {
 
 									cell = cellIterator.next(); // colum 6
 									cell.setCellType(CellType.STRING);
-									voto.setGolSubiti(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolSubiti(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 7
 									cell.setCellType(CellType.STRING);
-									voto.setRigoreParato(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreParato(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 8
 									cell.setCellType(CellType.STRING);
-									voto.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreSbagalto(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 9
 									cell.setCellType(CellType.STRING);
-									voto.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setRigoreFatto(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 10
 									cell.setCellType(CellType.STRING);
-									voto.setAutogol(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAutogol(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 11
 									cell.setCellType(CellType.STRING);
-									voto.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAmmunizioni(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 12
 									cell.setCellType(CellType.STRING);
-									voto.setEspulsioni(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setEspulsioni(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 13
 									cell.setCellType(CellType.STRING);
-									voto.setAssist(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAssist(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 14
 									cell.setCellType(CellType.STRING);
-									voto.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setAssistDaFermo(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 15
 									cell.setCellType(CellType.STRING);
-									voto.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolDellaVittoria(Integer.valueOf(cell.getStringCellValue()));
 
 									cell = cellIterator.next(); // colum 16
 									cell.setCellType(CellType.STRING);
-									voto.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()).intValue());
+									voto.setGolDelPareggio(Integer.valueOf(cell.getStringCellValue()));
 
 									// calcolo della valutazione
 									Double valutazione = voto.getVoto() + voto.getGolFatti() * 3 - voto.getGolSubiti()
