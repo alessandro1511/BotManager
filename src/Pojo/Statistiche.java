@@ -269,6 +269,15 @@ public class Statistiche {
 		return squadre;
 	}
 
+	/**
+	 * Calcolo la squadra avversaria per ogni giornata di campionato.
+	 *
+	 * @param numeroGiornata
+	 * @param squadra
+	 * @param path
+	 * @return
+	 * @throws Exception
+	 */
 	private static String calcolaSquadraAvversaria(int numeroGiornata, String squadra, String path) throws Exception {
 		System.out.println("Caricamento file del calendario");
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_CALENDARIO);
