@@ -33,7 +33,7 @@ public class Utils {
 			if (!path.contains(".jar")) {
 				path = "/home/alessandro.cappelli/Documents/Utility/FC/18-19/";
 			} else {
-				path = path.substring(0, path.lastIndexOf('/')) + "18-19/";
+				path = path.substring(0, path.lastIndexOf('/')+1) + "18-19/";
 			}
 			System.out.println("Path di riferimento bis: " + path);
 		} catch (Exception e) {
