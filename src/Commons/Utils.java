@@ -187,6 +187,13 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Ordinamento file dei voti.
+	 *
+	 * @param files
+	 * @return
+	 * @throws Exception
+	 */
 	public static File[] sortByNumber(File[] files) throws Exception {
 		if (files != null && files.length > 0) {
 			Arrays.sort(files, new Comparator<File>() {
