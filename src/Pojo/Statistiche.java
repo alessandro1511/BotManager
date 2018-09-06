@@ -29,7 +29,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> creaQuotazioni(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaQuotazioni(ArrayList<Squadra> squadre, String path) throws Exception {
 		System.out.println("Caricamento file quotazioni");
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI);
 		FileInputStream inputStream = new FileInputStream(pathFile);
@@ -90,7 +90,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> creaStatistiche(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaStatistiche(ArrayList<Squadra> squadre, String path) throws Exception {
 		System.out.println("Caricamento file delle statistiche");
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_STATISTICHE);
 		FileInputStream inputStream = new FileInputStream(pathFile);
@@ -144,6 +144,89 @@ public class Statistiche {
 	}
 
 	/**
+	 * Cerco il file del Calendario e per ogni giocatore cerco le giornate
+	 *
+	 * @param squadre - array delle squadre
+	 * @param path    file
+	 *
+	 * @return array delle squadre aggiornato
+	 *
+	 * @throws Exception
+	 */
+	public static ArrayList<Squadra> calcolaCalendario(ArrayList<Squadra> squadre, String path) throws Exception {
+		System.out.println("Caricamento file delle statistiche");
+		String pathFile = Utils.connectionFile(path, Costanti.FILE_CALENDARIO);
+		FileInputStream inputStream = new FileInputStream(pathFile);
+
+		System.out.println("Caricamento statistiche: " + pathFile);
+		Workbook workbook = new XSSFWorkbook(inputStream);
+		Sheet sheet = workbook.getSheetAt(0);
+
+		for (Squadra squadra : squadre) {
+			for (Giocatore g : squadra.getRosa()) {
+				Iterator<Row> iterator = sheet.iterator();
+				ArrayList<String> giornateDispari = new ArrayList<>();
+				ArrayList<String> giornatePari = new ArrayList<>();
+				while (iterator.hasNext()) {
+					Row nextRow = iterator.next();
+					Iterator<Cell> cellIterator = nextRow.cellIterator();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+						cell.setCellType(CellType.STRING);
+						try {
+							if (cell.getColumnIndex() == 0 && g.getSquadra() != null && !g.getSquadra().isEmpty()
+									&& cell.getStringCellValue().toUpperCase().trim().contains(g.getSquadra())) {
+								String avversaria = cell.getStringCellValue().toUpperCase().trim()
+										.replaceAll(g.getSquadra(), "");
+								if (avversaria.endsWith("-"))
+									g.addCasaTrasferta("T");
+								else {
+									g.addCasaTrasferta("C");
+								}
+								avversaria = avversaria.replaceAll("-", "");
+								giornateDispari.add(avversaria);
+							}
+
+							if (cell.getColumnIndex() == 3 && g.getSquadra() != null && !g.getSquadra().isEmpty()
+									&& cell.getStringCellValue().toUpperCase().trim().contains(g.getSquadra())) {
+								String avversaria = cell.getStringCellValue().toUpperCase().trim()
+										.replaceAll(g.getSquadra(), "");
+								if (avversaria.endsWith("-"))
+									g.addCasaTrasferta("T");
+								else {
+									g.addCasaTrasferta("C");
+								}
+								avversaria = avversaria.replaceAll("-", "");
+								giornatePari.add(avversaria);
+							}
+						} catch (Exception e) {
+							System.out.println("Errore calcola calendario: " + cell.getStringCellValue() + " squadra: "
+									+ g.getSquadra());
+						}
+					}
+				}
+
+				int index = 0;
+				while (index < giornateDispari.size() && index < giornatePari.size() ) {
+
+					if (index < giornateDispari.size()) {
+						g.addCalendarioAvversaria(giornateDispari.get(index));
+					}
+					if (index < giornatePari.size()) {
+						g.addCalendarioAvversaria(giornatePari.get(index));
+					}
+					index++;
+				}
+			}
+		}
+		workbook.close();
+		inputStream.close();
+
+		System.out.println("Statistiche per ogni giocatore caricate");
+		return squadre;
+	}
+
+	/**
 	 * Cerco tutti i file dei voti e calcolo giornata per giornata le statistiche
 	 * del giocatore.
 	 *
@@ -154,7 +237,7 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> votiGiornate(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaVotiGiornate(ArrayList<Squadra> squadre, String path) throws Exception {
 
 		System.out.println("Caricamento file dei voti");
 		ArrayList<String> pathFiles = Utils.connectionFiles(path, Costanti.FILE_VOTI);
@@ -248,10 +331,6 @@ public class Statistiche {
 											+ voto.getAssist() + voto.getAssistDaFermo() + voto.getGolDellaVittoria()
 											+ (double) voto.getGolDelPareggio() / 2;
 									voto.setValutazione(valutazione);
-
-									// calcolo la squadra avversaria
-									voto.setSquadraAvversaria(
-											calcolaSquadraAvversaria(numeroGiornata, g.getSquadra(), path));
 								}
 							} catch (Exception e) {
 								System.out.println("Errore voti giocatore: " + g.getNome());
@@ -269,29 +348,4 @@ public class Statistiche {
 		return squadre;
 	}
 
-	/**
-	 * Calcolo la squadra avversaria per ogni giornata di campionato.
-	 *
-	 * @param numeroGiornata
-	 * @param squadra
-	 * @param path
-	 * @return
-	 * @throws Exception
-	 */
-	private static String calcolaSquadraAvversaria(int numeroGiornata, String squadra, String path) throws Exception {
-		System.out.println("Caricamento file del calendario");
-		String pathFile = Utils.connectionFile(path, Costanti.FILE_CALENDARIO);
-		FileInputStream inputStream = new FileInputStream(pathFile);
-
-		System.out.println("Caricamento calendario: " + pathFile);
-		Workbook workbook = new XSSFWorkbook(inputStream);
-		Sheet sheet = workbook.getSheetAt(0);
-		try {
-
-
-		} catch (Exception e) {
-			System.out.println("Errore calcolo calendario");
-		}
-		return null;
-	}
 }

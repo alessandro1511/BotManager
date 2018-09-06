@@ -2,21 +2,38 @@ package Dao;
 
 public class Voti {
 
-	private Double voto = null;
-	private Integer golFatti = null;
-	private Integer golSubiti = null;
-	private Integer rigoreParato = null;
-	private Integer rigoreSbagalto = null;
-	private Integer rigoreFatto = null;
-	private Integer autogol = null;
-	private Integer ammunizioni = null;
-	private Integer espulsioni = null;
-	private Integer assist = null;
-	private Integer assistDaFermo = null;
-	private Integer golDellaVittoria = null;
-	private Integer golDelPareggio = null;
-	private Double valutazione = null;
-	private String squadraAvversaria = null;
+	private Double voto;
+	private Integer golFatti;
+	private Integer golSubiti;
+	private Integer rigoreParato;
+	private Integer rigoreSbagalto;
+	private Integer rigoreFatto;
+	private Integer autogol;
+	private Integer ammunizioni;
+	private Integer espulsioni;
+	private Integer assist;
+	private Integer assistDaFermo;
+	private Integer golDellaVittoria;
+	private Integer golDelPareggio;
+	private Double valutazione;
+
+	public Voti() {
+		super();
+		this.voto = null;
+		this.golFatti = null;
+		this.golSubiti = null;
+		this.rigoreParato = null;
+		this.rigoreSbagalto = null;
+		this.rigoreFatto = null;
+		this.autogol = null;
+		this.ammunizioni = null;
+		this.espulsioni = null;
+		this.assist = null;
+		this.assistDaFermo = null;
+		this.golDellaVittoria = null;
+		this.golDelPareggio = null;
+		this.valutazione = null;
+	}
 
 	public Double getVoto() {
 		return voto;
@@ -128,14 +145,6 @@ public class Voti {
 
 	public void setValutazione(Double valutazione) {
 		this.valutazione = valutazione;
-	}
-
-	public String getSquadraAvversaria() {
-		return squadraAvversaria;
-	}
-
-	public void setSquadraAvversaria(String squadraAvversaria) {
-		this.squadraAvversaria = squadraAvversaria;
 	}
 
 }

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,7 +14,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Dao.Giocatore;
 import Dao.Squadra;
-import Dao.Voti;
 import Views.Master;
 
 public class Utils {
@@ -30,9 +31,9 @@ public class Utils {
 		try {
 			path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			if (!path.contains(".jar")) {
-				path = "/home/alessandro.cappelli/Documents/Utility/FC/";
+				path = "/home/alessandro.cappelli/Documents/Utility/FC/18-19/";
 			} else {
-				path = path.substring(0, path.lastIndexOf('/'));
+				path = path.substring(0, path.lastIndexOf('/')) + "18-19/";
 			}
 			System.out.println("Path di riferimento bis: " + path);
 		} catch (Exception e) {
@@ -78,7 +79,7 @@ public class Utils {
 	 * @throws Exception
 	 */
 	public static ArrayList<String> connectionFiles(String path, String fileName) throws Exception {
-		ArrayList<String> files = new ArrayList<>();
+		ArrayList<String> filesPath = new ArrayList<>();
 
 		File dir = new File(path);
 		File[] foundFiles = dir.listFiles(new FilenameFilter() {
@@ -87,17 +88,12 @@ public class Utils {
 			}
 		});
 
-		if (foundFiles != null && foundFiles.length > 0) {
-			for (File f : foundFiles) {
-				files.add(f.getPath());
-			}
-		} else {
-			throw new Exception("File " + fileName + " non trovati");
+		foundFiles = sortByNumber(foundFiles);
+		for (File f : foundFiles) {
+			filesPath.add(f.getPath());
 		}
 
-		// TODO ordinare per nome la lista
-
-		return files;
+		return filesPath;
 	}
 
 	/**
@@ -143,9 +139,9 @@ public class Utils {
 			res = res + StringUtils.rightPad("NOME GIOCATORE", 20, " ") + "| " + StringUtils.rightPad("RUOLI", 10, " ")
 					+ "| " + StringUtils.rightPad("SQUADRA", 15, " ") + "| " + StringUtils.rightPad("PRE.", 5, " ")
 					+ "| " + StringUtils.rightPad("QuI.", 5, " ") + "| " + StringUtils.rightPad("QuA.", 5, " ") + "| "
-					+ StringUtils.rightPad("Voti.", 5, " ") + System.lineSeparator();
+					+ StringUtils.rightPad("Voti", 5, " ") + System.lineSeparator();
 
-			res = res + StringUtils.rightPad("-", 203, "-") + System.lineSeparator();
+			res = res + StringUtils.rightPad("-", 500, "-") + System.lineSeparator();
 			for (Giocatore g : squadra.getRosa()) {
 				res = res + StringUtils.rightPad(g.getNome(), 20, " ");
 				String ruoli = "";
@@ -169,14 +165,17 @@ public class Utils {
 					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneAttuale()), 5, " ");
 				else
 					res = res + "| " + StringUtils.rightPad("", 5, " ");
-				if (!g.getVoti().isEmpty()) {
-					String votiTotali = "";
-					for (Voti v : g.getVoti()) {
-						votiTotali = StringUtils.rightPad(
-								(v.getValutazione() == null ? "" : v.getValutazione().doubleValue()) + " ",
-								5, " ") + votiTotali;
+				if (!g.getCalendarioAvversarie().isEmpty()) {
+					String avversarie = "";
+					int index = 0;
+					for (String avversaria : g.getCalendarioAvversarie()) {
+						if (index < g.getVoti().size()) {
+							avversarie = avversarie + StringUtils.rightPad((g.getVoti().get(index).getValutazione() == null ? " " : g.getVoti().get(index).getValutazione().doubleValue()) + " ", 5, " ");
+						}
+						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : "(" + avversaria.substring(0, 3) + "-" + (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)) + ")") + " ", 5, " ") + "| ";
+						index++;
 					}
-					res = res + "| " + StringUtils.rightPad(votiTotali, 100, " ") + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad(avversarie, 500, " ") + System.lineSeparator();
 				} else {
 					res = res + "| " + StringUtils.rightPad("", 5, " ") + System.lineSeparator();
 				}
@@ -188,43 +187,35 @@ public class Utils {
 		}
 	}
 
-//	public static String printTutteFormazioni(SquadraDTO squadra) {
-//		try {
-//			String res = "";
-//			res = "FORMAZIONE: " + squadra.getNome() + System.lineSeparator();
-//			for (int i = 0; i < squadra.getFormazioni().size(); i++) {
-//				res = res + StringUtils.rightPad(squadra.getFormazioni().get(i).getModulo(), 20, " ");
-//			}
-//			res = res + System.lineSeparator();
-//
-//			// righe da inserire
-//			for (int g = 0; g < 36; g++) {
-//				for (int i = 0; i < squadra.getFormazioni().size(); i++) {
-//					if (squadra.getFormazioni().get(i).getFormazione().size() > g
-//							&& squadra.getFormazioni().get(i).getFormazione().get(g) != null)
-//						res = res + StringUtils
-//								.rightPad(squadra.getFormazioni().get(i).getFormazione().get(g).getNome(), 20, " ");
-//					else
-//						res = res + StringUtils.rightPad(" ", 20, " ");
-//				}
-//				res = res + System.lineSeparator();
-//				if (g == 10)
-//					res = res + StringUtils.rightPad("-", 220, "-") + System.lineSeparator();
-//			}
-//
-//			for (int i = 0; i < squadra.getFormazioni().size(); i++) {
-//				res = res + StringUtils.rightPad(
-//						"Val. " + String
-//								.valueOf(String.format("%.2f", squadra.getFormazioni().get(i).getValutazione())),
-//						20, " ");
-//			}
-//
-//			res = res + System.lineSeparator();
-//			return res;
-//		} catch (Exception e) {
-//			System.out.println("Errore stampa tutte le formazioni: " + e.getMessage());
-//			return null;
-//		}
-//	}
+	public static File[] sortByNumber(File[] files) throws Exception {
+		if (files != null && files.length > 0) {
+			Arrays.sort(files, new Comparator<File>() {
+				@Override
+				public int compare(File o1, File o2) {
+					int n1 = extractNumber(o1.getName());
+					int n2 = extractNumber(o2.getName());
+					return n1 - n2;
+				}
+
+				private int extractNumber(String name) {
+					int i = 0;
+					try {
+						int s = name.lastIndexOf('_') + 1;
+						int e = name.lastIndexOf('.');
+						String number = name.substring(s, e);
+						i = Integer.parseInt(number);
+					} catch (Exception e) {
+						i = 0; // if filename does not match the format
+								// then default to 0
+					}
+					return i;
+				}
+			});
+			return files;
+		} else {
+			throw new Exception("File non trovati");
+		}
+
+	}
 
 }

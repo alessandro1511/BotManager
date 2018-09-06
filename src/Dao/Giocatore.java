@@ -11,6 +11,8 @@ public class Giocatore {
 	private Integer quotazioneAttuale;
 	private Integer partiteGiocate;
 	private ArrayList<Voti> voti = new ArrayList<>();
+	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
+	private ArrayList<String> casaTrasferta = new ArrayList<>();
 
 	public String getNome() {
 		return nome;
@@ -70,6 +72,30 @@ public class Giocatore {
 
 	public void addVoti(Voti voti) {
 		this.voti.add(voti);
+	}
+
+	public ArrayList<String> getCalendarioAvversarie() {
+		return calendarioAvversarie;
+	}
+
+	public void setCalendarioAvversarie(ArrayList<String> calendarioAvversarie) {
+		this.calendarioAvversarie = calendarioAvversarie;
+	}
+
+	public void addCalendarioAvversaria(String avversaria) {
+		this.calendarioAvversarie.add(avversaria);
+	}
+
+	public ArrayList<String> getCasaTrasferta() {
+		return casaTrasferta;
+	}
+
+	public void setCasaTrasferta(ArrayList<String> casaTrasferta) {
+		this.casaTrasferta = casaTrasferta;
+	}
+
+	public void addCasaTrasferta(String casaTrasferta) {
+		this.casaTrasferta.add(casaTrasferta);
 	}
 
 }

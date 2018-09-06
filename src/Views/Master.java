@@ -39,11 +39,13 @@ public abstract class Master {
 
 		moduli = Moduli.createModuli();
 
-		squadre = Statistiche.creaQuotazioni(squadre, path);
+		squadre = Statistiche.calcolaQuotazioni(squadre, path);
 
-		squadre = Statistiche.creaStatistiche(squadre, path);
+		squadre = Statistiche.calcolaStatistiche(squadre, path);
 
-		squadre = Statistiche.votiGiornate(squadre, path);
+		squadre = Statistiche.calcolaCalendario(squadre, path);
+
+		squadre = Statistiche.calcolaVotiGiornate(squadre, path);
 
 		// squadre = Formazioni.creaFormazioni(moduli, squadre);
 
