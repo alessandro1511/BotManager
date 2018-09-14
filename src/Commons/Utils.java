@@ -170,13 +170,14 @@ public class Utils {
 					int index = 0;
 					for (String avversaria : g.getCalendarioAvversarie()) {
 						avversarie = avversarie + StringUtils.rightPad((index<9 ? "0" + (index+1) : (index+1))  + (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)), 4, " ");
+						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : avversaria.substring(0, 3)) + " ", 4, " ") ;
 
 						if (index < g.getVoti().size()) {
-							avversarie = avversarie + StringUtils.rightPad((g.getVoti().get(index).getValutazione() == null ? " " : g.getVoti().get(index).getValutazione().doubleValue()) + " ", 5, " ");
+							avversarie = avversarie + StringUtils.rightPad((g.getVoti().get(index).getValutazione() == null ? " " : g.getVoti().get(index).getValutazione().doubleValue()) + " ", 5, " ") + "| ";
 						} else {
-							avversarie = avversarie + StringUtils.rightPad("", 5, " ");
+							avversarie = avversarie + StringUtils.rightPad("", 5, " ") + "| ";
 						}
-						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : avversaria.substring(0, 3)) + " ", 4, " ") + "| ";
+
 						index++;
 						if (index == 10 || index == 20 || index == 30 ) {
 							avversarie = avversarie + System.lineSeparator() + StringUtils.rightPad("", 50, " ") + "| ";
