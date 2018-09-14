@@ -136,48 +136,55 @@ public class Utils {
 		try {
 			String res = "";
 			res = "ROSA: " + squadra.getNome() + System.lineSeparator();
-			res = res + StringUtils.rightPad("NOME GIOCATORE", 20, " ") + "| " + StringUtils.rightPad("RUOLI", 10, " ")
-					+ "| " + StringUtils.rightPad("SQUADRA", 15, " ") + "| " + StringUtils.rightPad("PRE.", 5, " ")
-					+ "| " + StringUtils.rightPad("QuI.", 5, " ") + "| " + StringUtils.rightPad("QuA.", 5, " ") + "| "
-					+ StringUtils.rightPad("Voti", 5, " ") + System.lineSeparator();
+			res = res + StringUtils.rightPad("GIOCATORE", 16, " ") + "| " + StringUtils.rightPad("RUOLI", 9, " ")
+					+ "| " + StringUtils.rightPad("SQ.", 4, " ") + "| " + StringUtils.rightPad("P.", 3, " ")
+					+ "| " + StringUtils.rightPad("QI.", 4, " ") + "| " + StringUtils.rightPad("QA.", 4, " ") + "| "
+					+ StringUtils.rightPad("VOTI", 5, " ") + System.lineSeparator();
 
-			res = res + StringUtils.rightPad("-", 500, "-") + System.lineSeparator();
+			res = res + StringUtils.rightPad("-", 201, "-") + System.lineSeparator();
 			for (Giocatore g : squadra.getRosa()) {
-				res = res + StringUtils.rightPad(g.getNome(), 20, " ");
+				res = res + StringUtils.rightPad(g.getNome(), 16, " ");
 				String ruoli = "";
 				for (String r : g.getRuoli())
 					ruoli = ruoli + r + " ";
-				res = res + "| " + StringUtils.rightPad(ruoli, 10, " ");
+				res = res + "| " + StringUtils.rightPad(ruoli, 9, " ");
 
 				if (g.getSquadra() != null)
-					res = res + "| " + StringUtils.rightPad(g.getSquadra(), 15, " ");
+					res = res + "| " + StringUtils.rightPad(g.getSquadra().substring(0, 3), 4, " ");
 				else
-					res = res + "| " + StringUtils.rightPad("", 15, " ");
+					res = res + "| " + StringUtils.rightPad("", 4, " ");
 				if (g.getPartiteGiocate() != null)
-					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getPartiteGiocate()), 5, " ");
+					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getPartiteGiocate()), 3, " ");
 				else
-					res = res + "| " + StringUtils.rightPad("", 5, " ");
+					res = res + "| " + StringUtils.rightPad("", 3, " ");
 				if (g.getQuotazioneIniziale() != null)
-					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneIniziale()), 5, " ");
+					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneIniziale()), 4, " ");
 				else
-					res = res + "| " + StringUtils.rightPad("", 5, " ");
+					res = res + "| " + StringUtils.rightPad("", 4, " ");
 				if (g.getQuotazioneAttuale() != null)
-					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneAttuale()), 5, " ");
+					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneAttuale()), 4, " ");
 				else
-					res = res + "| " + StringUtils.rightPad("", 5, " ");
+					res = res + "| " + StringUtils.rightPad("", 4, " ");
 				if (!g.getCalendarioAvversarie().isEmpty()) {
 					String avversarie = "";
 					int index = 0;
 					for (String avversaria : g.getCalendarioAvversarie()) {
+						avversarie = avversarie + StringUtils.rightPad((index<9 ? "0" + (index+1) : (index+1))  + (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)), 4, " ");
+
 						if (index < g.getVoti().size()) {
 							avversarie = avversarie + StringUtils.rightPad((g.getVoti().get(index).getValutazione() == null ? " " : g.getVoti().get(index).getValutazione().doubleValue()) + " ", 5, " ");
+						} else {
+							avversarie = avversarie + StringUtils.rightPad("", 5, " ");
 						}
-						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : "(" + avversaria.substring(0, 3) + "-" + (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)) + ")") + " ", 5, " ") + "| ";
+						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : avversaria.substring(0, 3)) + " ", 4, " ") + "| ";
 						index++;
+						if (index == 10 || index == 20 || index == 30 ) {
+							avversarie = avversarie + System.lineSeparator() + StringUtils.rightPad("", 50, " ") + "| ";
+						}
 					}
-					res = res + "| " + StringUtils.rightPad(avversarie, 500, " ") + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad(avversarie, 500, " ") + System.lineSeparator() + System.lineSeparator();
 				} else {
-					res = res + "| " + StringUtils.rightPad("", 5, " ") + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad("", 500, " ") + System.lineSeparator() + System.lineSeparator();
 				}
 			}
 			return res;

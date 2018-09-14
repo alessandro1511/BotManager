@@ -179,9 +179,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("T");
+									g.addCasaTrasferta("t");
 								else {
-									g.addCasaTrasferta("C");
+									g.addCasaTrasferta("c");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornateDispari.add(avversaria);
@@ -192,9 +192,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("T");
+									g.addCasaTrasferta("t");
 								else {
-									g.addCasaTrasferta("C");
+									g.addCasaTrasferta("c");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornatePari.add(avversaria);
