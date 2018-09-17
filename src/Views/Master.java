@@ -10,6 +10,7 @@ import Commons.Utils;
 import Dao.Modulo;
 import Dao.Squadra;
 import Pojo.Moduli;
+import Pojo.ProbabiliFormazioni;
 import Pojo.Squadre;
 import Pojo.Statistiche;
 
@@ -46,6 +47,8 @@ public abstract class Master {
 		squadre = Statistiche.calcolaCalendario(squadre, path);
 
 		squadre = Statistiche.calcolaVotiGiornate(squadre, path);
+
+		ProbabiliFormazioni.calcolaProbabiliFormazioni(path);
 
 		// squadre = Formazioni.creaFormazioni(moduli, squadre);
 
