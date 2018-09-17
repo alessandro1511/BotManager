@@ -1,8 +1,13 @@
 package Pojo;
 
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -10,6 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jsoup.Jsoup;
 
 import Commons.Costanti;
 import Commons.Utils;
@@ -345,6 +351,64 @@ public class Statistiche {
 		}
 
 		System.out.println("Voti per ogni giocatore caricate");
+		return squadre;
+	}
+
+	public static ArrayList<Squadra> calcolaProbabiliFormazioni(ArrayList<Squadra> squadre, String path) throws Exception {
+		System.out.println("Caricamento probabili formazioni");
+
+		String pathFile = Utils.connectionFile(path, Costanti.FILE_PROBABILI_FORMAZIONI);
+
+		StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
+		StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
+
+		try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
+			StringBuilder testo = new StringBuilder();
+			stream.forEach(s -> testo.append(s).append("\n"));
+
+			String testoSenzaTag = Jsoup.parse(testo.toString()).text();
+
+			while (testoSenzaTag.indexOf("TITOLARI") != -1) {
+				testoSenzaTagSoloFormazioniTitolari.append(testoSenzaTag
+						.substring(testoSenzaTag.indexOf("TITOLARI") + 9, testoSenzaTag.indexOf("PANCHINA")))
+						.append("\n");
+
+				testoSenzaTagSoloFormazioniPanchina
+						.append(testoSenzaTag.substring(testoSenzaTag.indexOf("PANCHINA") + 9,
+								testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI")))
+						.append("\n");
+
+				if (testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") != -1) {
+					testoSenzaTag = testoSenzaTag.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("Errore calcolo probabili formazioni");
+		}
+
+		System.out.println("TITOLARI");
+		System.out.print(testoSenzaTagSoloFormazioniTitolari.toString());
+		System.out.println("PANCHINA");
+		System.out.print(testoSenzaTagSoloFormazioniPanchina.toString());
+		System.out.println("Probabili formazioni caricate");
+
+		for (Squadra squadra : squadre) {
+			for (Giocatore g : squadra.getRosa()) {
+
+				if (testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) != -1) {
+					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniTitolari.substring(
+							testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
+							testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4).trim() + "T");
+				} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
+					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniPanchina.substring(
+							testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
+							testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome())).trim() + "P");
+				} else {
+					g.setProbabilitaProssimoIncontro(null);
+				}
+			}
+		}
+
 		return squadre;
 	}
 
