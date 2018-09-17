@@ -48,9 +48,7 @@ public abstract class Master {
 
 		squadre = Statistiche.calcolaVotiGiornate(squadre, path);
 
-		ProbabiliFormazioni.calcolaProbabiliFormazioni(path);
-
-		// squadre = Formazioni.creaFormazioni(moduli, squadre);
+		squadre = ProbabiliFormazioni.calcolaProbabiliFormazioni(squadre, path);
 
 		Grafica.inferfaccia(squadre, path);
 	}

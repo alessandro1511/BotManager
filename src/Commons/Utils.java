@@ -33,7 +33,7 @@ public class Utils {
 			if (!path.contains(".jar")) {
 				path = "/home/alessandro.cappelli/Documents/Utility/FC/18-19/";
 			} else {
-				path = path.substring(0, path.lastIndexOf('/')+1) + "18-19/";
+				path = path.substring(0, path.lastIndexOf('/') + 1) + "18-19/";
 			}
 			System.out.println("Path di riferimento bis: " + path);
 		} catch (Exception e) {
@@ -136,12 +136,13 @@ public class Utils {
 		try {
 			String res = "";
 			res = "ROSA: " + squadra.getNome() + System.lineSeparator();
-			res = res + StringUtils.rightPad("GIOCATORE", 16, " ") + "| " + StringUtils.rightPad("RUOLI", 9, " ")
-					+ "| " + StringUtils.rightPad("SQ.", 4, " ") + "| " + StringUtils.rightPad("P.", 3, " ")
-					+ "| " + StringUtils.rightPad("QI.", 4, " ") + "| " + StringUtils.rightPad("QA.", 4, " ") + "| "
-					+ StringUtils.rightPad("VOTI", 5, " ") + System.lineSeparator();
+			res = res + StringUtils.rightPad("GIOCATORE", 16, " ") + "| " + StringUtils.rightPad("RUOLI", 9, " ") + "| "
+					+ StringUtils.rightPad("SQ.", 4, " ") + "| " + StringUtils.rightPad("P.", 3, " ") + "| "
+					+ StringUtils.rightPad("QI.", 4, " ") + "| " + StringUtils.rightPad("QA.", 4, " ") + "| "
+					+ StringUtils.rightPad("PPI.", 5, " ") + "| " + StringUtils.rightPad("VOTI", 5, " ")
+					+ System.lineSeparator();
 
-			res = res + StringUtils.rightPad("-", 201, "-") + System.lineSeparator();
+			res = res + StringUtils.rightPad("-", 208, "-") + System.lineSeparator();
 			for (Giocatore g : squadra.getRosa()) {
 				res = res + StringUtils.rightPad(g.getNome(), 16, " ");
 				String ruoli = "";
@@ -165,27 +166,43 @@ public class Utils {
 					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneAttuale()), 4, " ");
 				else
 					res = res + "| " + StringUtils.rightPad("", 4, " ");
+
+				if (g.getProbabilitaProssimoIncontro() != null)
+					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getProbabilitaProssimoIncontro()), 5, " ");
+				else
+					res = res + "| " + StringUtils.rightPad("", 5, " ");
+
 				if (!g.getCalendarioAvversarie().isEmpty()) {
 					String avversarie = "";
 					int index = 0;
 					for (String avversaria : g.getCalendarioAvversarie()) {
-						avversarie = avversarie + StringUtils.rightPad((index<9 ? "0" + (index+1) : (index+1))  + (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)), 4, " ");
-						avversarie = avversarie + StringUtils.rightPad((avversaria == null ? "" : avversaria.substring(0, 3)) + " ", 4, " ") ;
+						avversarie = avversarie + StringUtils.rightPad((index < 9 ? "0" + (index + 1) : (index + 1))
+								+ (g.getCasaTrasferta().get(index) == null ? "" : g.getCasaTrasferta().get(index)), 4,
+								" ");
+						avversarie = avversarie + StringUtils
+								.rightPad((avversaria == null ? "" : avversaria.substring(0, 3)) + " ", 4, " ");
 
 						if (index < g.getVoti().size()) {
-							avversarie = avversarie + StringUtils.rightPad((g.getVoti().get(index).getValutazione() == null ? " " : g.getVoti().get(index).getValutazione().doubleValue()) + " ", 5, " ") + "| ";
+							avversarie = avversarie
+									+ StringUtils.rightPad(
+											(g.getVoti().get(index).getValutazione() == null ? " "
+													: g.getVoti().get(index).getValutazione().doubleValue()) + " ",
+											5, " ")
+									+ "| ";
 						} else {
 							avversarie = avversarie + StringUtils.rightPad("", 5, " ") + "| ";
 						}
 
 						index++;
-						if (index == 10 || index == 20 || index == 30 ) {
-							avversarie = avversarie + System.lineSeparator() + StringUtils.rightPad("", 50, " ") + "| ";
+						if (index == 10 || index == 20 || index == 30) {
+							avversarie = avversarie + System.lineSeparator() + StringUtils.rightPad("", 57, " ") + "| ";
 						}
 					}
-					res = res + "| " + StringUtils.rightPad(avversarie, 500, " ") + System.lineSeparator() + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad(avversarie, 500, " ") + System.lineSeparator()
+							+ System.lineSeparator();
 				} else {
-					res = res + "| " + StringUtils.rightPad("", 500, " ") + System.lineSeparator() + System.lineSeparator();
+					res = res + "| " + StringUtils.rightPad("", 500, " ") + System.lineSeparator()
+							+ System.lineSeparator();
 				}
 			}
 			return res;
