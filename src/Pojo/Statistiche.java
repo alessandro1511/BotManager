@@ -358,6 +358,7 @@ public class Statistiche {
 		System.out.println("Caricamento probabili formazioni");
 
 		String pathFile = Utils.connectionFile(path, Costanti.FILE_PROBABILI_FORMAZIONI);
+		System.out.println("Caricamento delle quotazioni: " + pathFile);
 
 		StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
 		StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();

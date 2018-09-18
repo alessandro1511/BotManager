@@ -23,14 +23,15 @@ public class Squadre extends Master {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> creaSquadre() throws Exception {
+	public static ArrayList<Squadra> creaSquadre(ArrayList<Squadra> squadre, String path) throws Exception {
 		System.out.println("Caricamento squadre");
 
-		ArrayList<Squadra> squadre = new ArrayList<Squadra>();
 		for (Sheet sheet : workbook) {
 			if (sheet.getSheetName().toUpperCase().startsWith("FORMAZIONE")) {
 				Squadra squadra = new Squadra();
-				squadra.setNome(sheet.getSheetName());
+
+				//nome squadra
+				squadra.setNome(sheet.getSheetName() + "(" + path.substring(path.lastIndexOf("/")-5, path.lastIndexOf("/")) + ")");
 				Iterator<Row> iterator = sheet.iterator();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();

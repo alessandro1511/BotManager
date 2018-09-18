@@ -19,29 +19,23 @@ public class Grafica {
 	 *
 	 * @param squadre
 	 */
-	public static void inferfaccia(ArrayList<Squadra> squadre, String path) {
+	public static void inferfaccia(ArrayList<Squadra> squadre) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		while (true) {
 			try {
 				Utils.CLS();
-				File fileStatistiche = new File(Utils.connectionFile(path, Costanti.FILE_STATISTICHE));
-				File fileVoti = new File(Utils.connectionFiles(path, Costanti.FILE_VOTI)
-						.get(Utils.connectionFiles(path, Costanti.FILE_VOTI).size() - 1));
-				File fileQuotazioni = new File(Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI));
 
 				int index = 0;
 				for (Squadra squadra : squadre) {
 					System.out.println(index + " - " + squadra.getNome());
 					index++;
 				}
-				System.out.println("S - Scarica file Statistiche (" + fileStatistiche.getName() + " "
-						+ sdf.format(fileStatistiche.lastModified()) + ")");
-				System.out.println("V - Scarica file Voti (" + fileVoti.getName() + " "
-						+ sdf.format(fileVoti.lastModified()) + ")");
-				System.out.println("Q - Scarica file Quotazioni (" + fileQuotazioni.getName() + " "
-						+ sdf.format(fileQuotazioni.lastModified()) + ")");
+				System.out.println("S - Scarica file Statistiche");
+				System.out.println("V - Scarica file Voti");
+				System.out.println("Q - Scarica file Quotazioni");
+				System.out.println("P - Scarica file Probabili Formazioni");
 				System.out.println("R - Ricarica tutto");
 				System.out.println("E - Exit");
 
@@ -51,11 +45,7 @@ public class Grafica {
 				Utils.CLS();
 
 				if (StringUtils.isNumeric(input)) {
-					System.out.println(Utils.printRosa(squadre.get(Integer.parseInt(input)))); // stampa
-																								// rosa
-																								// completa
-					// System.out.println(Utils.printTutteFormazioni(squadre.get(Integer.parseInt(input))));
-					// //stampa tutte le formazioni ordinate
+					System.out.println(Utils.printRosa(squadre.get(Integer.parseInt(input))));
 					System.out.println("Premere invio per continuare");
 					br.readLine();
 				} else if (input.toUpperCase().equals("S")) {
@@ -64,6 +54,8 @@ public class Grafica {
 					java.awt.Desktop.getDesktop().browse(new URI(Costanti.URL_VOTI));
 				} else if (input.toUpperCase().equals("Q")) {
 					java.awt.Desktop.getDesktop().browse(new URI(Costanti.URL_QUOTAZIONI));
+				} else if (input.toUpperCase().equals("P")) {
+					java.awt.Desktop.getDesktop().browse(new URI(Costanti.URL_PROBABILI_FORMAZIONI));
 				} else if (input.toUpperCase().equals("R")) {
 					Master.caricaInfo();
 				} else if (input.toUpperCase().equals("E")) {

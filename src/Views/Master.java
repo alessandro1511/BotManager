@@ -1,24 +1,20 @@
 package Views;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
 import Commons.Grafica;
 import Commons.Utils;
-import Dao.Modulo;
 import Dao.Squadra;
-import Pojo.Moduli;
 import Pojo.Squadre;
 import Pojo.Statistiche;
 
 public abstract class Master {
 
-	public static ArrayList<Squadra> squadre = null;
-	public static Map<String, Modulo> moduli = null;
+	public static ArrayList<Squadra> squadre = new ArrayList<>();
 	public static Workbook workbook = null;
-	public static String path = null;
+	public static ArrayList<String> paths = null;
 
 	public static void main(String[] args) throws Exception {
 		try {
@@ -31,28 +27,25 @@ public abstract class Master {
 	public static void caricaInfo() throws Exception {
 		System.out.println("Caricamento programma in corso... (sistema: " + System.getProperty("os.name") + ")");
 
-		path = Utils.calcolaPath();
+		paths = Utils.calcolaPaths();
 
-		workbook = Utils.connectionWorkbook(path);
+		for (String path : paths) {
 
-		squadre = Squadre.creaSquadre();
+			workbook = Utils.connectionWorkbook(path);
 
-		moduli = Moduli.createModuli();
+			squadre = Squadre.creaSquadre(squadre, path);
 
-		squadre = Statistiche.calcolaQuotazioni(squadre, path);
+			squadre = Statistiche.calcolaQuotazioni(squadre, path);
 
-		squadre = Statistiche.calcolaStatistiche(squadre, path);
+			squadre = Statistiche.calcolaStatistiche(squadre, path);
 
-		squadre = Statistiche.calcolaCalendario(squadre, path);
+			squadre = Statistiche.calcolaCalendario(squadre, path);
 
-		squadre = Statistiche.calcolaVotiGiornate(squadre, path);
+			squadre = Statistiche.calcolaVotiGiornate(squadre, path);
 
-		squadre = Statistiche.calcolaProbabiliFormazioni(squadre, path);
+			squadre = Statistiche.calcolaProbabiliFormazioni(squadre, path);
+		}
 
-		Grafica.inferfaccia(squadre, path);
-	}
-
-	public static String getPath() {
-		return path;
+		Grafica.inferfaccia(squadre);
 	}
 }

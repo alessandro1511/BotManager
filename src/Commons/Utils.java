@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -18,28 +19,28 @@ import Views.Master;
 
 public class Utils {
 
-	/**
-	 * Se non contiene il file jar vuol dire che sono su Eclipse, quindi metto un
-	 * path fisso.
-	 * <p>
-	 * Altrimenti sto eseguendo il jar e quindi dal path rimuovo il file.
-	 *
-	 * @return path
-	 */
-	public static String calcolaPath() {
-		String path = null;
-		try {
-			path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-			if (!path.contains(".jar")) {
-				path = "/home/alessandro.cappelli/Documents/Utility/FC/18-19/";
-			} else {
-				path = path.substring(0, path.lastIndexOf('/') + 1) + "18-19/";
-			}
-			System.out.println("Path di riferimento bis: " + path);
-		} catch (Exception e) {
-			System.out.println("Errore path");
+	public static ArrayList<String> calcolaPaths() throws Exception {
+		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		if (!path.contains(".jar")) {
+			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/lib/";
+		} else {
+			path = path.substring(0, path.lastIndexOf('/') + 1);
 		}
-		return path;
+
+		File file = new File(path);
+		String[] directories = file.list(new FilenameFilter() {
+		  @Override
+		  public boolean accept(File current, String name) {
+		    return new File(current, name).isDirectory();
+		  }
+		});
+
+		ArrayList<String> paths = new ArrayList<>();
+		for(String d : directories) {
+			paths.add(path + d + "/");
+		}
+
+		return paths;
 	}
 
 	/**
