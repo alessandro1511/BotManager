@@ -367,6 +367,16 @@ public class Statistiche {
 			StringBuilder testo = new StringBuilder();
 			stream.forEach(s -> testo.append(s).append("\n"));
 
+			if (testo.toString().isEmpty() || testo.toString().length() == 0) {
+				for (Squadra squadra : squadre) {
+					for (Giocatore g : squadra.getRosa()) {
+							g.setProbabilitaProssimoIncontro(null);
+					}
+				}
+				System.out.println("Probabili formazioni non calcolate, file vuoto");
+				return squadre;
+			}
+
 			String testoSenzaTag = Jsoup.parse(testo.toString()).text();
 
 			while (testoSenzaTag.indexOf("TITOLARI") != -1) {
