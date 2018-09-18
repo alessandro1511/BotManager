@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +39,8 @@ public class Utils {
 		for(String d : directories) {
 			paths.add(path + d + "/");
 		}
+
+		Collections.sort(paths, Collections.reverseOrder());
 
 		return paths;
 	}
