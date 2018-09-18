@@ -31,19 +31,25 @@ public abstract class Master {
 
 		for (String path : paths) {
 
+			ArrayList<Squadra> teams = new ArrayList<>();
+
 			workbook = Utils.connectionWorkbook(path);
 
-			squadre = Squadre.creaSquadre(squadre, path);
+			teams = Squadre.creaSquadre(teams, path);
 
-			squadre = Statistiche.calcolaQuotazioni(squadre, path);
+			teams = Statistiche.calcolaQuotazioni(teams, path);
 
-			squadre = Statistiche.calcolaStatistiche(squadre, path);
+			teams = Statistiche.calcolaStatistiche(teams, path);
 
-			squadre = Statistiche.calcolaCalendario(squadre, path);
+			teams = Statistiche.calcolaCalendario(teams, path);
 
-			squadre = Statistiche.calcolaVotiGiornate(squadre, path);
+			teams = Statistiche.calcolaVotiGiornate(teams, path);
 
-			squadre = Statistiche.calcolaProbabiliFormazioni(squadre, path);
+			teams = Statistiche.calcolaProbabiliFormazioni(teams, path);
+
+			for(Squadra s: teams) {
+				squadre.add(s);
+			}
 		}
 
 		Grafica.inferfaccia(squadre);
