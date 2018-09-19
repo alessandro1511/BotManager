@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -336,7 +337,8 @@ public class Statistiche {
 											- (double) voto.getAmmunizioni() / 2 - voto.getEspulsioni()
 											+ voto.getAssist() + voto.getAssistDaFermo() + voto.getGolDellaVittoria()
 											+ (double) voto.getGolDelPareggio() / 2;
-									voto.setValutazione(valutazione);
+
+									voto.setValutazione(Math.round( valutazione * 10.0 ) / 10.0);
 								}
 							} catch (Exception e) {
 								System.out.println("Errore voti giocatore: " + g.getNome());
