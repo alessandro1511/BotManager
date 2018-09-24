@@ -7,7 +7,6 @@ public class Giocatore {
 	private String nome;
 	private ArrayList<String> ruoli = new ArrayList<>();
 	private String squadra;
-	private Integer quotazioneIniziale;
 	private Integer quotazioneAttuale;
 	private Integer partiteGiocate;
 	private ArrayList<Voti> voti = new ArrayList<>();
@@ -37,14 +36,6 @@ public class Giocatore {
 
 	public void setSquadra(String squadra) {
 		this.squadra = squadra;
-	}
-
-	public Integer getQuotazioneIniziale() {
-		return quotazioneIniziale;
-	}
-
-	public void setQuotazioneIniziale(Integer quotazioneIniziale) {
-		this.quotazioneIniziale = quotazioneIniziale;
 	}
 
 	public Integer getQuotazioneAttuale() {

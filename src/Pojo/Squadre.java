@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import Dao.Fantacalcio;
 import Dao.Giocatore;
 import Dao.Squadra;
 import Views.Master;
@@ -23,15 +24,15 @@ public class Squadre extends Master {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> creaSquadre(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> creaSquadre(ArrayList<Squadra> squadre, Fantacalcio fantacalcio) throws Exception {
 		System.out.println("Caricamento squadre");
 
-		for (Sheet sheet : workbook) {
+		for (Sheet sheet : fantacalcio.getWorkbook()) {
 			if (sheet.getSheetName().toUpperCase().startsWith("FORMAZIONE")) {
 				Squadra squadra = new Squadra();
 
 				//nome squadra
-				squadra.setNome(sheet.getSheetName() + "(" + path.substring(path.lastIndexOf("/")-5, path.lastIndexOf("/")) + ")");
+				squadra.setNome(sheet.getSheetName() + "(" + fantacalcio.getAnno() + ")");
 				Iterator<Row> iterator = sheet.iterator();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();
@@ -59,7 +60,7 @@ public class Squadre extends Master {
 				squadre.add(squadra);
 			}
 		}
-		workbook.close();
+		fantacalcio.getWorkbook().close();
 
 		System.out.println("Squadre caricate");
 		return squadre;

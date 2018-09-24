@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -20,6 +19,7 @@ import org.jsoup.Jsoup;
 
 import Commons.Costanti;
 import Commons.Utils;
+import Dao.Fantacalcio;
 import Dao.Giocatore;
 import Dao.Squadra;
 import Dao.Voti;
@@ -36,9 +36,10 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> calcolaQuotazioni(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaQuotazioni(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
 		System.out.println("Caricamento file quotazioni");
-		String pathFile = Utils.connectionFile(path, Costanti.FILE_QUOTAZIONI);
+		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_QUOTAZIONI);
 		FileInputStream inputStream = new FileInputStream(pathFile);
 
 		System.out.println("Caricamento delle quotazioni: " + pathFile);
@@ -57,8 +58,8 @@ public class Statistiche {
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
 					indexCol++;
-					if (indexCol == 3) // nome giocatore
-					{
+					if (indexCol == 3) {
+						// nome giocatore
 						for (Giocatore g : squadra.getRosa()) {
 							if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
 								indexGiocatore = squadra.getRosa().indexOf(g);
@@ -66,16 +67,10 @@ public class Statistiche {
 								break;
 							}
 						}
-					} else if (indexCol == 5 && findGiocatore) // quotazione
-																// attuale
-					{
+					} else if (indexCol == 5 && findGiocatore) {
+						// quotazione attuale
 						squadra.getRosa().get(indexGiocatore)
 								.setQuotazioneAttuale(Double.valueOf(cell.getNumericCellValue()).intValue());
-					} else if (indexCol == 6 && findGiocatore) // quotazione
-																// iniziale
-					{
-						squadra.getRosa().get(indexGiocatore)
-								.setQuotazioneIniziale(Double.valueOf(cell.getNumericCellValue()).intValue());
 					}
 				}
 			}
@@ -97,9 +92,10 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> calcolaStatistiche(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaStatistiche(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
 		System.out.println("Caricamento file delle statistiche");
-		String pathFile = Utils.connectionFile(path, Costanti.FILE_STATISTICHE);
+		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_STATISTICHE);
 		FileInputStream inputStream = new FileInputStream(pathFile);
 
 		System.out.println("Caricamento statistiche: " + pathFile);
@@ -160,9 +156,10 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> calcolaCalendario(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaCalendario(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
 		System.out.println("Caricamento file delle statistiche");
-		String pathFile = Utils.connectionFile(path, Costanti.FILE_CALENDARIO);
+		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_CALENDARIO);
 		FileInputStream inputStream = new FileInputStream(pathFile);
 
 		System.out.println("Caricamento statistiche: " + pathFile);
@@ -186,9 +183,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("t");
+									g.addCasaTrasferta("tras");
 								else {
-									g.addCasaTrasferta("c");
+									g.addCasaTrasferta("casa");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornateDispari.add(avversaria);
@@ -199,9 +196,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("t");
+									g.addCasaTrasferta("tras");
 								else {
-									g.addCasaTrasferta("c");
+									g.addCasaTrasferta("casa");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornatePari.add(avversaria);
@@ -213,8 +210,10 @@ public class Statistiche {
 					}
 				}
 
+				fantacalcio.setGiornate(giornateDispari.size() + giornatePari.size());
+
 				int index = 0;
-				while (index < giornateDispari.size() && index < giornatePari.size() ) {
+				while (index < giornateDispari.size() && index < giornatePari.size()) {
 
 					if (index < giornateDispari.size()) {
 						g.addCalendarioAvversaria(giornateDispari.get(index));
@@ -224,6 +223,7 @@ public class Statistiche {
 					}
 					index++;
 				}
+
 			}
 		}
 		workbook.close();
@@ -244,10 +244,11 @@ public class Statistiche {
 	 *
 	 * @throws Exception
 	 */
-	public static ArrayList<Squadra> calcolaVotiGiornate(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaVotiGiornate(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
 
 		System.out.println("Caricamento file dei voti");
-		ArrayList<String> pathFiles = Utils.connectionFiles(path, Costanti.FILE_VOTI);
+		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_VOTI);
 
 		int numeroGiornata = 0;
 		for (String pathFile : pathFiles) {
@@ -338,7 +339,7 @@ public class Statistiche {
 											+ voto.getAssist() + voto.getAssistDaFermo() + voto.getGolDellaVittoria()
 											+ (double) voto.getGolDelPareggio() / 2;
 
-									voto.setValutazione(Math.round( valutazione * 10.0 ) / 10.0);
+									voto.setValutazione(Math.round(valutazione * 10.0) / 10.0);
 								}
 							} catch (Exception e) {
 								System.out.println("Errore voti giocatore: " + g.getNome());
@@ -356,10 +357,11 @@ public class Statistiche {
 		return squadre;
 	}
 
-	public static ArrayList<Squadra> calcolaProbabiliFormazioni(ArrayList<Squadra> squadre, String path) throws Exception {
+	public static ArrayList<Squadra> calcolaProbabiliFormazioni(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
 		System.out.println("Caricamento probabili formazioni");
 
-		String pathFile = Utils.connectionFile(path, Costanti.FILE_PROBABILI_FORMAZIONI);
+		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
 		System.out.println("Caricamento delle quotazioni: " + pathFile);
 
 		StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
@@ -372,7 +374,7 @@ public class Statistiche {
 			if (testo.toString().isEmpty() || testo.toString().length() == 0) {
 				for (Squadra squadra : squadre) {
 					for (Giocatore g : squadra.getRosa()) {
-							g.setProbabilitaProssimoIncontro(null);
+						g.setProbabilitaProssimoIncontro(null);
 					}
 				}
 				System.out.println("Probabili formazioni non calcolate, file vuoto");
@@ -409,13 +411,15 @@ public class Statistiche {
 			for (Giocatore g : squadra.getRosa()) {
 
 				if (testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) != -1) {
-					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniTitolari.substring(
-							testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
-							testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4).trim() + "T");
+					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniTitolari
+							.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
+									testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
+							.trim() + "T");
 				} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
-					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniPanchina.substring(
-							testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
-							testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome())).trim() + "P");
+					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniPanchina
+							.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
+									testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
+							.trim() + "P");
 				} else {
 					g.setProbabilitaProssimoIncontro(null);
 				}

@@ -2,19 +2,14 @@ package Views;
 
 import java.util.ArrayList;
 
-import org.apache.poi.ss.usermodel.Workbook;
-
 import Commons.Grafica;
 import Commons.Utils;
+import Dao.Fantacalcio;
 import Dao.Squadra;
 import Pojo.Squadre;
 import Pojo.Statistiche;
 
 public abstract class Master {
-
-	public static ArrayList<Squadra> squadre = new ArrayList<>();
-	public static Workbook workbook = null;
-	public static ArrayList<String> paths = null;
 
 	public static void main(String[] args) throws Exception {
 		try {
@@ -27,31 +22,31 @@ public abstract class Master {
 	public static void caricaInfo() throws Exception {
 		System.out.println("Caricamento programma in corso... (sistema: " + System.getProperty("os.name") + ")");
 
-		paths = Utils.calcolaPaths();
+		ArrayList<Squadra> squadreGlobali = new ArrayList<>();
 
-		for (String path : paths) {
+		ArrayList<Fantacalcio> listaFileFantacalcio = Utils.caricaListaFileFantacalcio();
 
-			ArrayList<Squadra> teams = new ArrayList<>();
+		for (Fantacalcio fantacalcio : listaFileFantacalcio) {
 
-			workbook = Utils.connectionWorkbook(path);
+			ArrayList<Squadra> squadre = new ArrayList<>();
 
-			teams = Squadre.creaSquadre(teams, path);
+			squadre = Squadre.creaSquadre(squadre, fantacalcio);
 
-			teams = Statistiche.calcolaQuotazioni(teams, path);
+			squadre = Statistiche.calcolaQuotazioni(squadre, fantacalcio);
 
-			teams = Statistiche.calcolaStatistiche(teams, path);
+			squadre = Statistiche.calcolaStatistiche(squadre, fantacalcio);
 
-			teams = Statistiche.calcolaCalendario(teams, path);
+			squadre = Statistiche.calcolaCalendario(squadre, fantacalcio);
 
-			teams = Statistiche.calcolaVotiGiornate(teams, path);
+			squadre = Statistiche.calcolaVotiGiornate(squadre, fantacalcio);
 
-			teams = Statistiche.calcolaProbabiliFormazioni(teams, path);
+			squadre = Statistiche.calcolaProbabiliFormazioni(squadre, fantacalcio);
 
-			for(Squadra s: teams) {
-				squadre.add(s);
+			for(Squadra s: squadre) {
+				squadreGlobali.add(s);
 			}
 		}
 
-		Grafica.inferfaccia(squadre);
+		Grafica.inferfaccia(squadreGlobali);
 	}
 }

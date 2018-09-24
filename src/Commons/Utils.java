@@ -10,16 +10,16 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Dao.Fantacalcio;
 import Dao.Giocatore;
 import Dao.Squadra;
 import Views.Master;
 
 public class Utils {
 
-	public static ArrayList<String> calcolaPaths() throws Exception {
+	public static ArrayList<Fantacalcio> caricaListaFileFantacalcio() throws Exception {
 		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		if (!path.contains(".jar")) {
 			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/lib/";
@@ -29,20 +29,47 @@ public class Utils {
 
 		File file = new File(path);
 		String[] directories = file.list(new FilenameFilter() {
-		  @Override
-		  public boolean accept(File current, String name) {
-		    return new File(current, name).isDirectory();
-		  }
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
 		});
 
-		ArrayList<String> paths = new ArrayList<>();
-		for(String d : directories) {
-			paths.add(path + d + "/");
+		ArrayList<Fantacalcio> fantacalcio = new ArrayList<>();
+		for (String d : directories) {
+			Fantacalcio f = new Fantacalcio();
+			f.setPath(path + d + "/");
+			System.out.println("Caricamento file " + f.getPath());
+
+			// verifico esistenza file del fantacalcio
+			File dir = new File(f.getPath());
+			File[] foundFiles = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.startsWith(Costanti.FILE_SQUADRE);
+				}
+			});
+
+			if (foundFiles != null && foundFiles.length > 0 && foundFiles[0].exists()) {
+				FileInputStream inputStream = new FileInputStream(foundFiles[0].getPath());
+				f.setWorkbook(new XSSFWorkbook(inputStream));
+			} else {
+				System.out.println("File non trovato");
+				throw new Exception("File not found");
+			}
+
+			f.setAnno(f.getPath().substring(f.getPath().lastIndexOf("/") - 5, f.getPath().lastIndexOf("/")));
+
+			fantacalcio.add(f);
 		}
 
-		Collections.sort(paths, Collections.reverseOrder());
+		Collections.sort(fantacalcio, new Comparator<Fantacalcio>() {
 
-		return paths;
+			public int compare(Fantacalcio f1, Fantacalcio f2) {
+				return f2.getAnno().compareTo(f1.getAnno());
+			}
+		});
+
+		return fantacalcio;
 	}
 
 	/**
@@ -99,34 +126,6 @@ public class Utils {
 		return filesPath;
 	}
 
-	/**
-	 * Verifico se il file del Fantacalcio e' presente e in tal caso lo carico.
-	 *
-	 * @return Workbook
-	 *
-	 * @throws Exception
-	 */
-	public static Workbook connectionWorkbook(String path) throws Exception {
-		// cerco il file del fantacalcio
-		File dir = new File(path);
-		File[] foundFiles = dir.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.startsWith(Costanti.FILE_SQUADRE);
-			}
-		});
-
-		// carico il file se presente
-		if (foundFiles != null && foundFiles.length > 0 && foundFiles[0].exists()) {
-			System.out.println("Caricamento file " + foundFiles[0].getName());
-			FileInputStream inputStream = new FileInputStream(foundFiles[0].getPath());
-			Workbook wb = new XSSFWorkbook(inputStream);
-			return wb;
-		} else {
-			System.out.println("File non trovato");
-			throw new Exception("File not found");
-		}
-	}
-
 	public static void CLS() throws IOException, InterruptedException {
 		final String os = System.getProperty("os.name");
 		if (os.contains("Windows"))
@@ -141,9 +140,8 @@ public class Utils {
 			res = "ROSA: " + squadra.getNome() + System.lineSeparator();
 			res = res + StringUtils.rightPad("GIOCATORE", 16, " ") + "| " + StringUtils.rightPad("RUOLI", 9, " ") + "| "
 					+ StringUtils.rightPad("SQ.", 4, " ") + "| " + StringUtils.rightPad("P.", 3, " ") + "| "
-					+ StringUtils.rightPad("QI.", 4, " ") + "| " + StringUtils.rightPad("QA.", 4, " ") + "| "
-					+ StringUtils.rightPad("PPI.", 5, " ") + "| " + StringUtils.rightPad("VOTI", 5, " ")
-					+ System.lineSeparator();
+					+ StringUtils.rightPad("QA.", 4, " ") + "| " + StringUtils.rightPad("PPI.", 5, " ") + "| "
+					+ StringUtils.rightPad("VOTI", 5, " ") + System.lineSeparator();
 
 			res = res + StringUtils.rightPad("-", 208, "-") + System.lineSeparator();
 			for (Giocatore g : squadra.getRosa()) {
@@ -161,10 +159,6 @@ public class Utils {
 					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getPartiteGiocate()), 3, " ");
 				else
 					res = res + "| " + StringUtils.rightPad("", 3, " ");
-				if (g.getQuotazioneIniziale() != null)
-					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneIniziale()), 4, " ");
-				else
-					res = res + "| " + StringUtils.rightPad("", 4, " ");
 				if (g.getQuotazioneAttuale() != null)
 					res = res + "| " + StringUtils.rightPad(String.valueOf(g.getQuotazioneAttuale()), 4, " ");
 				else
