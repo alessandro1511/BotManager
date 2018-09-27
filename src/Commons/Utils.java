@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,12 +21,7 @@ import Views.Master;
 public class Utils {
 
 	public static ArrayList<Fantacalcio> caricaListaFileFantacalcio() throws Exception {
-		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-		if (!path.contains(".jar")) {
-			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/lib/";
-		} else {
-			path = path.substring(0, path.lastIndexOf('/') + 1);
-		}
+		String path = jarPath();
 
 		File file = new File(path);
 		String[] directories = file.list(new FilenameFilter() {
@@ -70,6 +66,16 @@ public class Utils {
 		});
 
 		return fantacalcio;
+	}
+
+	public static String jarPath() throws URISyntaxException {
+		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		if (!path.contains(".jar")) {
+			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/lib/";
+		} else {
+			path = path.substring(0, path.lastIndexOf('/') + 1);
+		}
+		return path;
 	}
 
 	/**

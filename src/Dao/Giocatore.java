@@ -7,6 +7,7 @@ public class Giocatore {
 	private String nome;
 	private ArrayList<String> ruoli = new ArrayList<>();
 	private String squadra;
+	private String squadraFantacalcio;
 	private Integer quotazioneAttuale;
 	private Integer partiteGiocate;
 	private ArrayList<Voti> voti = new ArrayList<>();
@@ -36,6 +37,14 @@ public class Giocatore {
 
 	public void setSquadra(String squadra) {
 		this.squadra = squadra;
+	}
+
+	public String getSquadraFantacalcio() {
+		return squadraFantacalcio;
+	}
+
+	public void setSquadraFantacalcio(String squadraFantacalcio) {
+		this.squadraFantacalcio = squadraFantacalcio;
 	}
 
 	public Integer getQuotazioneAttuale() {

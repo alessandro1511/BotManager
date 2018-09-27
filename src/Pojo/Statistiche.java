@@ -120,6 +120,7 @@ public class Statistiche {
 							for (Giocatore g : squadra.getRosa()) {
 								if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
 									indexGiocatore = squadra.getRosa().indexOf(g);
+									squadra.getRosa().get(indexGiocatore).setSquadraFantacalcio(squadra.getNome());
 									findGiocatore = true;
 									break;
 								}
@@ -210,7 +211,7 @@ public class Statistiche {
 					}
 				}
 
-				fantacalcio.setGiornate(giornateDispari.size() + giornatePari.size());
+				squadra.setGiornateCampionato(giornateDispari.size() + giornatePari.size());
 
 				int index = 0;
 				while (index < giornateDispari.size() && index < giornatePari.size()) {

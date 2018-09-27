@@ -32,7 +32,8 @@ public class Squadre extends Master {
 				Squadra squadra = new Squadra();
 
 				//nome squadra
-				squadra.setNome(sheet.getSheetName() + "(" + fantacalcio.getAnno() + ")");
+				squadra.setNome(sheet.getSheetName());
+				squadra.setAnno(fantacalcio.getAnno());
 				Iterator<Row> iterator = sheet.iterator();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();

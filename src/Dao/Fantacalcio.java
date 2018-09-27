@@ -7,7 +7,6 @@ public class Fantacalcio {
 	private String path;
 	private Workbook workbook;
 	private String anno;
-	private int giornate;
 
 	public String getPath() {
 		return path;
@@ -31,14 +30,6 @@ public class Fantacalcio {
 
 	public void setAnno(String anno) {
 		this.anno = anno;
-	}
-
-	public int getGiornate() {
-		return giornate;
-	}
-
-	public void setGiornate(int giornate) {
-		this.giornate = giornate;
 	}
 
 }

@@ -13,4 +13,5 @@ public class Costanti {
 	public static final String FILE_VOTI = "Voti";
 	public static final String FILE_PROBABILI_FORMAZIONI = "Probabili_Formazioni";
 	public static final String FILE_QUOTAZIONI = "Quotazioni";
+	public static final String FILE_BOT_MANAGER = "BotManager.xlsx";
 }
