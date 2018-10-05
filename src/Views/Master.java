@@ -46,7 +46,7 @@ public abstract class Master {
 				squadreGlobali.add(s);
 			}
 		}
-		Grafica.testFile(squadreGlobali);
+		Grafica.creaFile(squadreGlobali);
 
 	}
 }

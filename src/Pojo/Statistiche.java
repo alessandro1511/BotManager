@@ -184,9 +184,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("tras");
+									g.addCasaTrasferta("(T)");
 								else {
-									g.addCasaTrasferta("casa");
+									g.addCasaTrasferta("(C)");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornateDispari.add(avversaria);
@@ -197,9 +197,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("tras");
+									g.addCasaTrasferta("(T)");
 								else {
-									g.addCasaTrasferta("casa");
+									g.addCasaTrasferta("(C)");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornatePari.add(avversaria);
@@ -211,7 +211,9 @@ public class Statistiche {
 					}
 				}
 
-				squadra.setGiornateCampionato(giornateDispari.size() + giornatePari.size());
+				if (squadra.getGiornateCampionato() == 0) {
+					squadra.setGiornateCampionato(giornateDispari.size() + giornatePari.size());
+				}
 
 				int index = 0;
 				while (index < giornateDispari.size() && index < giornatePari.size()) {
@@ -415,12 +417,12 @@ public class Statistiche {
 					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniTitolari
 							.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
 									testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
-							.trim() + "T");
+							.trim() + " Titolare");
 				} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
 					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniPanchina
 							.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
 									testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
-							.trim() + "P");
+							.trim() + " Panchina");
 				} else {
 					g.setProbabilitaProssimoIncontro(null);
 				}

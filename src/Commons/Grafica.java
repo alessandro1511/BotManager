@@ -1,9 +1,9 @@
 package Commons;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Dao.Giocatore;
 import Dao.Squadra;
 
 import java.io.FileOutputStream;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Grafica {
 
-	public static void testFile(ArrayList<Squadra> squadre) throws Exception {
+	public static void creaFile(ArrayList<Squadra> squadre) throws Exception {
 
 		System.out.println("Caricamento file " + Costanti.FILE_BOT_MANAGER);
 
@@ -25,10 +25,12 @@ public class Grafica {
 		 */
 		CreationHelper createHelper = workbook.getCreationHelper();
 
+		try {
+
 		for (Squadra squadra : squadre) {
 
 			// Create a Sheet
-			Sheet sheet = workbook.createSheet(squadra.getNome() + " (" + squadra.getAnno() + ")");
+			Sheet sheet = workbook.createSheet(squadra.getNome() + "(" + squadra.getAnno() + ")");
 
 			// Create a Font for styling header cells
 			Font headerFont = workbook.createFont();
@@ -44,7 +46,10 @@ public class Grafica {
 			ArrayList<String> headerColumns = new ArrayList<>();
 			headerColumns.add("Giocatore");
 			headerColumns.add("Ruolo");
+			headerColumns.add("Squadra");
+			headerColumns.add("Presenze");
 			headerColumns.add("Quotazione");
+			headerColumns.add("Probabilità");
 			for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 				headerColumns.add("Giornata " + (i+1));
 			}
@@ -56,32 +61,59 @@ public class Grafica {
 				cell.setCellStyle(headerCellStyle);
 			}
 
-			/*
 			// Create Cell Style for formatting Date
-			CellStyle dateCellStyle = workbook.createCellStyle();
-			dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+			//CellStyle cellStyle = workbook.createCellStyle();
+			int rowNum = 0;
+			for (Giocatore giocatore : squadra.getRosa()) {
+				Row row = sheet.createRow(rowNum+1);
 
-			// Create Other rows and cells with employees data
-			int rowNum = 1;
-			for (Employee employee : employees) {
-				Row row = sheet.createRow(rowNum++);
+				row.createCell(0).setCellValue(giocatore.getNome());
 
-				row.createCell(0).setCellValue(employee.getName());
+				String ruoli = "";
+				for (String r : giocatore.getRuoli()) {
+					ruoli = ruoli + r + " ";
+				}
+				row.createCell(1).setCellValue(ruoli);
 
-				row.createCell(1).setCellValue(employee.getEmail());
+				row.createCell(2).setCellValue(giocatore.getSquadra());
 
-				Cell dateOfBirthCell = row.createCell(2);
-				dateOfBirthCell.setCellValue(employee.getDateOfBirth());
-				dateOfBirthCell.setCellStyle(dateCellStyle);
+//				cellStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat("#"));
+//				row.createCell(3).setCellStyle(cellStyle);
+				if (giocatore.getPartiteGiocate() != null) {
+					row.createCell(3).setCellValue(String.valueOf(giocatore.getPartiteGiocate()));
+				}
 
-				row.createCell(3).setCellValue(employee.getSalary());
+//				cellStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat("#"));
+//				row.createCell(3).setCellStyle(cellStyle);
+				if (giocatore.getQuotazioneAttuale() != null && giocatore.getQuotazioneAttuale() > 0) {
+					row.createCell(4).setCellValue(String.valueOf(giocatore.getQuotazioneAttuale()));
+				}
+
+				row.createCell(5).setCellValue(giocatore.getProbabilitaProssimoIncontro());
+
+				for (int i= 0; i < squadra.getGiornateCampionato(); i++) {
+					String giornata = "";
+					if (i < giocatore.getVoti().size() && giocatore.getVoti().get(i).getValutazione() != null){
+						giornata = String.valueOf(giocatore.getVoti().get(i).getValutazione().doubleValue()) + " ";
+					}
+					if (i < giocatore.getCalendarioAvversarie().size() && !giocatore.getCalendarioAvversarie().get(i).isEmpty()){
+						giornata = giornata + giocatore.getCalendarioAvversarie().get(i).substring(0, 3) + " ";
+					}
+					if (i < giocatore.getCasaTrasferta().size() && !giocatore.getCasaTrasferta().get(i).isEmpty()){
+						giornata = giornata + giocatore.getCasaTrasferta().get(i);
+					}
+					row.createCell(6 + i).setCellValue(giornata.trim());
+				}
+				rowNum++;
 			}
-			*/
 
 			// Resize all columns to fit the content size
 			for (int i = 0; i < headerColumns.size(); i++) {
 				sheet.autoSizeColumn(i);
 			}
+		}
+		} catch (Exception e) {
+			System.out.println("Errore carimecamento file " + Costanti.FILE_BOT_MANAGER);
 		}
 
 		// Write the output to a file
