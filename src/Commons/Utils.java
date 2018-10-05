@@ -71,7 +71,7 @@ public class Utils {
 	public static String jarPath() throws URISyntaxException {
 		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		if (!path.contains(".jar")) {
-			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/lib/";
+			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/";
 		} else {
 			path = path.substring(0, path.lastIndexOf('/') + 1);
 		}
