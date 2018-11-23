@@ -32,8 +32,7 @@ public class Grafica {
 			// Create a Sheet
 			Sheet sheet = workbook.createSheet(squadra.getNome() + "(" + squadra.getAnno() + ")");
 
-			// Freeze la prima riga e le prime 6 colonne
-			sheet.createFreezePane(0, 1);
+			// Freeze le prime 6 colonne
 			sheet.createFreezePane(1, 0);
 			sheet.createFreezePane(2, 0);
 			sheet.createFreezePane(3, 0);
