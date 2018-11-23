@@ -32,6 +32,15 @@ public class Grafica {
 			// Create a Sheet
 			Sheet sheet = workbook.createSheet(squadra.getNome() + "(" + squadra.getAnno() + ")");
 
+			// Freeze la prima riga e le prime 6 colonne
+			sheet.createFreezePane(0, 1);
+			sheet.createFreezePane(1, 0);
+			sheet.createFreezePane(2, 0);
+			sheet.createFreezePane(3, 0);
+			sheet.createFreezePane(4, 0);
+			sheet.createFreezePane(5, 0);
+			sheet.createFreezePane(6, 0);
+
 			// Create a Font for styling header cells
 			Font headerFont = workbook.createFont();
 			headerFont.setBold(true);
