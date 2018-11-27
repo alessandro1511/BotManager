@@ -263,6 +263,7 @@ public class Statistiche {
 			Sheet sheet = workbook.getSheetAt(0);
 
 			for (Squadra squadra : squadre) {
+				squadra.setProssimaGiornataCampionato(numeroGiornata+1);
 				for (Giocatore g : squadra.getRosa()) {
 					Voti voto = new Voti();
 					Iterator<Row> iterator = sheet.iterator();

@@ -1,5 +1,6 @@
 package Commons;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -39,6 +40,7 @@ public class Grafica {
 			sheet.createFreezePane(4, 0);
 			sheet.createFreezePane(5, 0);
 			sheet.createFreezePane(6, 0);
+			sheet.createFreezePane(7, 0);
 
 			// Create a Font for styling header cells
 			Font headerFont = workbook.createFont();
@@ -57,6 +59,7 @@ public class Grafica {
 			headerColumns.add("Squadra");
 			headerColumns.add("Presenze");
 			headerColumns.add("Quotazione");
+			headerColumns.add("Pross. Avv.");
 			headerColumns.add("Probabilità");
 			for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 				headerColumns.add("Giornata " + (i+1));
@@ -97,7 +100,12 @@ public class Grafica {
 					row.createCell(4).setCellValue(String.valueOf(giocatore.getQuotazioneAttuale()));
 				}
 
-				row.createCell(5).setCellValue(giocatore.getProbabilitaProssimoIncontro());
+				if (squadra.getProssimaGiornataCampionato() <= giocatore.getCalendarioAvversarie().size()) {
+					giocatore.setProssimaSquadraAvversaria(giocatore.getCalendarioAvversarie().get(squadra.getProssimaGiornataCampionato()-1));
+				}
+				row.createCell(5).setCellValue(giocatore.getProssimaSquadraAvversaria());
+
+				row.createCell(6).setCellValue(giocatore.getProbabilitaProssimoIncontro());
 
 				for (int i= 0; i < squadra.getGiornateCampionato(); i++) {
 					String giornata = "";
@@ -105,12 +113,17 @@ public class Grafica {
 						giornata = String.valueOf(giocatore.getVoti().get(i).getValutazione().doubleValue()) + " ";
 					}
 					if (i < giocatore.getCalendarioAvversarie().size() && !giocatore.getCalendarioAvversarie().get(i).isEmpty()){
-						giornata = giornata + giocatore.getCalendarioAvversarie().get(i).substring(0, 3) + " ";
+						giornata = giornata + giocatore.getCalendarioAvversarie().get(i) + " ";
 					}
 					if (i < giocatore.getCasaTrasferta().size() && !giocatore.getCasaTrasferta().get(i).isEmpty()){
 						giornata = giornata + giocatore.getCasaTrasferta().get(i);
 					}
-					row.createCell(6 + i).setCellValue(giornata.trim());
+
+					if (StringUtils.isNotEmpty(giocatore.getProssimaSquadraAvversaria()) && giornata.contains(giocatore.getProssimaSquadraAvversaria())) {
+						giornata = giornata + " *";
+					}
+
+					row.createCell(7 + i).setCellValue(giornata.trim());
 				}
 				rowNum++;
 			}

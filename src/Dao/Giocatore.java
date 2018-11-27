@@ -12,6 +12,7 @@ public class Giocatore {
 	private Integer partiteGiocate;
 	private ArrayList<Voti> voti = new ArrayList<>();
 	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
+	private String prossimaSquadraAvversaria;
 	private String probabilitaProssimoIncontro;
 	private ArrayList<String> casaTrasferta = new ArrayList<>();
 
@@ -85,6 +86,14 @@ public class Giocatore {
 
 	public void addCalendarioAvversaria(String avversaria) {
 		this.calendarioAvversarie.add(avversaria);
+	}
+
+	public String getProssimaSquadraAvversaria() {
+		return prossimaSquadraAvversaria;
+	}
+
+	public void setProssimaSquadraAvversaria(String prossimaSquadraAvversaria) {
+		this.prossimaSquadraAvversaria = prossimaSquadraAvversaria;
 	}
 
 	public ArrayList<String> getCasaTrasferta() {
