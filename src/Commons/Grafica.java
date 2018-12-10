@@ -133,7 +133,7 @@ public class Grafica {
 
 					row.createCell(2).setCellValue(giocatore.getSquadra());
 
-					if (giocatore.getQuotazioneAttuale() != null && giocatore.getQuotazioneAttuale() > 0) {
+					if (giocatore.getQuotazioneAttuale() != null && giocatore.getQuotazioneAttuale().compareTo(Integer.valueOf(0)) > 0) {
 						row.createCell(3).setCellType(CellType.NUMERIC);
 						row.getCell(3).setCellValue(giocatore.getQuotazioneAttuale().intValue());
 					} else {
