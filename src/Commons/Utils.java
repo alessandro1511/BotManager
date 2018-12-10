@@ -11,6 +11,15 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Dao.Fantacalcio;
@@ -251,6 +260,60 @@ public class Utils {
 			throw new Exception("File non trovati");
 		}
 
+	}
+
+	/**
+	 * Trova il valore in una cella di testo
+	 *
+	 * @param sheet
+	 * @param cellContent
+	 * @return
+	 */
+	public static int findRow(Sheet sheet, String cellContent) {
+		for (Row row : sheet) {
+			for (Cell cell : row) {
+				if (cell.getCellTypeEnum() == CellType.STRING
+						&& cell.getRichStringCellValue().getString().trim().equalsIgnoreCase(cellContent)) {
+					return row.getRowNum();
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static Cell getOrCreateCell(Sheet sheet, int rowIdx, int colIdx) {
+		Row row = sheet.getRow(rowIdx);
+		if (row == null) {
+			row = sheet.createRow(rowIdx);
+		}
+
+		Cell cell = row.getCell(colIdx);
+		if (cell == null) {
+			cell = row.createCell(colIdx);
+		}
+
+		return cell;
+	}
+
+	public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, int colIdx, String author, String commentText) {
+		CreationHelper factory = workbook.getCreationHelper();
+		// get an existing cell or create it otherwise:
+		Cell cell = getOrCreateCell(sheet, rowIdx, colIdx);
+
+		ClientAnchor anchor = factory.createClientAnchor();
+		// i found it useful to show the comment box at the bottom right corner
+		anchor.setCol1(cell.getColumnIndex() + 1); // the box of the comment starts at this given column...
+		anchor.setCol2(cell.getColumnIndex() + 3); // ...and ends at that given column
+		anchor.setRow1(rowIdx + 1); // one row below the cell...
+		anchor.setRow2(rowIdx + 5); // ...and 4 rows high
+
+		Drawing drawing = sheet.createDrawingPatriarch();
+		Comment comment = drawing.createCellComment(anchor);
+		// set the comment text and author
+		comment.setString(factory.createRichTextString(commentText));
+		comment.setAuthor(author);
+
+		cell.setCellComment(comment);
 	}
 
 }
