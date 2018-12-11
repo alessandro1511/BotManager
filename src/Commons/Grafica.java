@@ -202,12 +202,12 @@ public class Grafica {
 				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
 				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
-						new CellRangeAddress(0, 0, 7, 43));
+						new CellRangeAddress(0, 0, 7, 44));
 				for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
 
 					ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(i),
 							new CellRangeAddress(Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()),
-									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 43));
+									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 44));
 
 					LineChartSeries series1 = data.addSeries(asseX, asseY);
 					series1.setTitle(giocatore.getNome() + " (" + workbook.getSheetAt(i).getSheetName() + ")");
