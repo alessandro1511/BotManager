@@ -263,7 +263,7 @@ public class Statistiche {
 			Sheet sheet = workbook.getSheetAt(0);
 
 			for (Squadra squadra : squadre) {
-				squadra.setProssimaGiornataCampionato(numeroGiornata+1);
+				squadra.setProssimaGiornataCampionato(numeroGiornata + 1);
 				for (Giocatore g : squadra.getRosa()) {
 					Voti voto = new Voti();
 					Iterator<Row> iterator = sheet.iterator();
@@ -419,10 +419,11 @@ public class Statistiche {
 									testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
 							.trim() + " Titolare");
 				} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
-					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniPanchina
-							.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
-									testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
-							.trim() + " Panchina");
+					g.setProbabilitaProssimoIncontro(
+							testoSenzaTagSoloFormazioniPanchina
+									.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
+											testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
+									.trim() + " Panchina");
 				} else {
 					g.setProbabilitaProssimoIncontro(null);
 				}
