@@ -110,7 +110,8 @@ public class Grafica {
 					Cell celli = headerRow.createCell(i + 7);
 					if (i == squadra.getProssimaGiornataCampionato() - 1) {
 						celli.setCellValue((i + 1) + "" + (char) 170 + " C");
-						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + 7), "", (i + 1) + " Giornata Corrente");
+						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + 7), "",
+								(i + 1) + " Giornata Corrente");
 					} else {
 						celli.setCellValue((i + 1) + "" + (char) 170);
 						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + 7), "", (i + 1) + " Giornata");
@@ -133,7 +134,8 @@ public class Grafica {
 
 					row.createCell(2).setCellValue(giocatore.getSquadra());
 
-					if (giocatore.getQuotazioneAttuale() != null && giocatore.getQuotazioneAttuale().compareTo(Integer.valueOf(0)) > 0) {
+					if (giocatore.getQuotazioneAttuale() != null
+							&& giocatore.getQuotazioneAttuale().compareTo(Integer.valueOf(0)) > 0) {
 						row.createCell(3).setCellType(CellType.NUMERIC);
 						row.getCell(3).setCellValue(giocatore.getQuotazioneAttuale().intValue());
 					} else {
@@ -147,7 +149,8 @@ public class Grafica {
 						giocatore.setProssimaSquadraAvversaria(
 								giocatore.getCalendarioAvversarie().get(squadra.getProssimaGiornataCampionato() - 1));
 						row.getCell(4).setCellValue(giocatore.getProssimaSquadraAvversaria());
-						row.getCell(5).setCellValue(giocatore.getCasaTrasferta().get(squadra.getProssimaGiornataCampionato() - 1));
+						row.getCell(5).setCellValue(
+								giocatore.getCasaTrasferta().get(squadra.getProssimaGiornataCampionato() - 1));
 					}
 
 					row.createCell(6).setCellValue(giocatore.getProbabilitaProssimoIncontro());
@@ -163,12 +166,12 @@ public class Grafica {
 									: "Trasferta");
 						}
 
-						double voto = (i < giocatore.getVoti().size()
-								&& giocatore.getVoti().get(i).getValutazione() != null)
-										? giocatore.getVoti().get(i).getValutazione().doubleValue()
-										: 0.0;
 						row.createCell(7 + i).setCellType(CellType.NUMERIC);
-						row.getCell(7 + i).setCellValue(voto);
+						if (i < giocatore.getVoti().size() && giocatore.getVoti().get(i).getValutazione() != null) {
+							row.getCell(7 + i).setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
+						} else {
+							row.getCell(7 + i).setCellValue(0.0);
+						}
 						Utils.addComment(workbook, sheet, rowNum, 7 + i, "", giornata.trim());
 					}
 
@@ -198,7 +201,8 @@ public class Grafica {
 				ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
 				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
-				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1), new CellRangeAddress(0, 0, 7, 43));
+				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
+						new CellRangeAddress(0, 0, 7, 43));
 				for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
 
 					ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(i),
@@ -206,7 +210,7 @@ public class Grafica {
 									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 43));
 
 					LineChartSeries series1 = data.addSeries(asseX, asseY);
-					series1.setTitle(giocatore.getNome() + " (" + workbook.getSheetAt(i).getSheetName() +")");
+					series1.setTitle(giocatore.getNome() + " (" + workbook.getSheetAt(i).getSheetName() + ")");
 				}
 				chart.plot(data, bottomAxis, leftAxis);
 				coord = coord + 12;
