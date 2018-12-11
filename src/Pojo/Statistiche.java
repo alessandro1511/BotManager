@@ -171,7 +171,9 @@ public class Statistiche {
 			for (Giocatore g : squadra.getRosa()) {
 				Iterator<Row> iterator = sheet.iterator();
 				ArrayList<String> giornateDispari = new ArrayList<>();
+				ArrayList<String> giornateCasaTrasfertaDispari = new ArrayList<>();
 				ArrayList<String> giornatePari = new ArrayList<>();
+				ArrayList<String> giornateCasaTrasfertaPari = new ArrayList<>();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();
 					Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -184,9 +186,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("T");
+									giornateCasaTrasfertaDispari.add("T");
 								else {
-									g.addCasaTrasferta("C");
+									giornateCasaTrasfertaDispari.add("C");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornateDispari.add(avversaria);
@@ -197,9 +199,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									g.addCasaTrasferta("T");
+									giornateCasaTrasfertaPari.add("T");
 								else {
-									g.addCasaTrasferta("C");
+									giornateCasaTrasfertaPari.add("C");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornatePari.add(avversaria);
@@ -220,9 +222,11 @@ public class Statistiche {
 
 					if (index < giornateDispari.size()) {
 						g.addCalendarioAvversaria(giornateDispari.get(index));
+						g.addCasaTrasferta(giornateCasaTrasfertaDispari.get(index));
 					}
 					if (index < giornatePari.size()) {
 						g.addCalendarioAvversaria(giornatePari.get(index));
+						g.addCasaTrasferta(giornateCasaTrasfertaPari.get(index));
 					}
 					index++;
 				}
