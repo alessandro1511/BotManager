@@ -44,7 +44,7 @@ public class Grafica {
 
 		try {
 			// Create a Sheet Grafici
-			//Sheet sheetGrafici = workbook.createSheet("Grafica");
+			Sheet sheetGrafici = workbook.createSheet("Grafica");
 
 			for (Squadra squadra : squadre) {
 
@@ -183,35 +183,34 @@ public class Grafica {
 			}
 
 			// Creazione Grafici
-//			Drawing drawing = sheetGrafici.createDrawingPatriarch();
-//			ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, 1, 17, 22);
-//
-//			Chart chart = drawing.createChart(anchor);
-//			ChartLegend legend = chart.getOrCreateLegend();
-//			legend.setPosition(LegendPosition.TOP);
-//
-//			LineChartData data = chart.getChartDataFactory().createLineChartData();
-//
-//			ChartAxis bottomAxis = chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
-//			ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
-//			leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-//
-//			for (Squadra squadra : squadre) {
-//				for (Giocatore giocatore : squadra.getRosa()) {
-//					ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1), new CellRangeAddress(0, 0, 7, 43));
-//					for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
-//
-//						ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(i),
-//								new CellRangeAddress(Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()),
-//										Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 43));
-//
-//						LineChartSeries series1 = data.addSeries(asseX, asseY);
-//						series1.setTitle(giocatore.getNome());
-//
-//						chart.plot(data, bottomAxis, leftAxis);
-//					}
-//				}
-//			}
+			int coord = 1;
+			for (Giocatore giocatore : squadre.get(0).getRosa()) {
+				Drawing drawing = sheetGrafici.createDrawingPatriarch();
+				ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, coord, 18, coord + 12);
+
+				Chart chart = drawing.createChart(anchor);
+				ChartLegend legend = chart.getOrCreateLegend();
+				legend.setPosition(LegendPosition.RIGHT);
+
+				LineChartData data = chart.getChartDataFactory().createLineChartData();
+
+				ChartAxis bottomAxis = chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
+				ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+
+				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1), new CellRangeAddress(0, 0, 7, 43));
+				for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
+
+					ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(i),
+							new CellRangeAddress(Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()),
+									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 43));
+
+					LineChartSeries series1 = data.addSeries(asseX, asseY);
+					series1.setTitle(giocatore.getNome() + " (" + workbook.getSheetAt(i).getSheetName() +")");
+				}
+				chart.plot(data, bottomAxis, leftAxis);
+				coord = coord + 12;
+			}
 		} catch (
 
 		Exception e) {
