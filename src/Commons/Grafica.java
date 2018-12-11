@@ -210,7 +210,7 @@ public class Grafica {
 									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 44));
 
 					LineChartSeries series1 = data.addSeries(asseX, asseY);
-					series1.setTitle(giocatore.getNome() + " (" + workbook.getSheetAt(i).getSheetName() + ")");
+					series1.setTitle(giocatore.getNome() + " [" + workbook.getSheetAt(i).getSheetName() + "]");
 				}
 				chart.plot(data, bottomAxis, leftAxis);
 				coord = coord + 12;
