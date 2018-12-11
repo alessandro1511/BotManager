@@ -340,8 +340,7 @@ public class Statistiche {
 											+ voto.getRigoreParato() * 3 - voto.getRigoreSbagalto() * 3
 											+ voto.getRigoreFatto() * 3 - voto.getAutogol() * 2
 											- (double) voto.getAmmunizioni() / 2 - voto.getEspulsioni()
-											+ voto.getAssist() + voto.getAssistDaFermo() + voto.getGolDellaVittoria()
-											+ (double) voto.getGolDelPareggio() / 2;
+											+ voto.getAssist() + voto.getAssistDaFermo();
 
 									voto.setValutazione(Math.round(valutazione * 10.0) / 10.0);
 								}
