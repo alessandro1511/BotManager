@@ -1,4 +1,4 @@
-package Pojo;
+package pojo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,10 +7,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import Dao.Fantacalcio;
-import Dao.Giocatore;
-import Dao.Squadra;
-import Views.Master;
+import dao.Fantacalcio;
+import dao.Giocatore;
+import dao.Squadra;
+import views.Master;
 
 public class Squadre extends Master {
 

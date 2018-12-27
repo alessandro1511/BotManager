@@ -1,13 +1,13 @@
-package Views;
+package views;
 
 import java.util.ArrayList;
 
-import Commons.Grafica;
-import Commons.Utils;
-import Dao.Fantacalcio;
-import Dao.Squadra;
-import Pojo.Squadre;
-import Pojo.Statistiche;
+import commons.Grafica;
+import commons.Utils;
+import dao.Fantacalcio;
+import dao.Squadra;
+import pojo.Squadre;
+import pojo.Statistiche;
 
 public abstract class Master {
 
@@ -42,7 +42,7 @@ public abstract class Master {
 
 			squadre = Statistiche.calcolaProbabiliFormazioni(squadre, fantacalcio);
 
-			for(Squadra s: squadre) {
+			for (Squadra s : squadre) {
 				squadreGlobali.add(s);
 			}
 		}

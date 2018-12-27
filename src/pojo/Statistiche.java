@@ -1,4 +1,4 @@
-package Pojo;
+package pojo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,12 +17,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jsoup.Jsoup;
 
-import Commons.Costanti;
-import Commons.Utils;
-import Dao.Fantacalcio;
-import Dao.Giocatore;
-import Dao.Squadra;
-import Dao.Voti;
+import commons.Costanti;
+import commons.Utils;
+import dao.Fantacalcio;
+import dao.Giocatore;
+import dao.Squadra;
+import dao.Voti;
 
 public class Statistiche {
 

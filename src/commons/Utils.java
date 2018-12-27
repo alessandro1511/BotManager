@@ -1,4 +1,4 @@
-package Commons;
+package commons;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,10 +22,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Dao.Fantacalcio;
-import Dao.Giocatore;
-import Dao.Squadra;
-import Views.Master;
+import dao.Fantacalcio;
+import dao.Giocatore;
+import dao.Squadra;
+import views.Master;
 
 public class Utils {
 
