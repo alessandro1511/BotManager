@@ -369,7 +369,7 @@ public class Statistiche {
 		System.out.println("Caricamento probabili formazioni");
 
 		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
-		System.out.println("Caricamento delle quotazioni: " + pathFile);
+		System.out.println("Caricamento probabili formazioni: " + pathFile);
 
 		StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
 		StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
