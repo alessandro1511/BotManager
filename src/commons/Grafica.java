@@ -178,13 +178,12 @@ public class Grafica {
 					// valore della media voto
 					CellStyle cellStyle = workbook.createCellStyle();
 					cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+					row.createCell(indexMediaVoto).setCellType(CellType.NUMERIC);
+					row.createCell(indexMediaVoto).setCellStyle(cellStyle);
 					if (giocatore.getMediaVoto() != null) {
-						row.createCell(indexMediaVoto).setCellType(CellType.NUMERIC);
-						row.createCell(indexMediaVoto).setCellStyle(cellStyle);
 						row.getCell(indexMediaVoto).setCellValue(giocatore.getMediaVoto());
 					} else {
-						row.createCell(indexMediaVoto).setCellType(CellType.STRING);
-						row.getCell(indexMediaVoto).setCellValue("");
+						row.getCell(indexMediaVoto).setCellValue(0);
 					}
 
 					// valore prossima squadra avversara e se in casa o transferta
