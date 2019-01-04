@@ -11,7 +11,7 @@ public class Giocatore {
 	private Integer quotazioneAttuale;
 	private Integer quotazioneIniziale;
 	private Integer quotazioneDiff;
-	private Integer partiteGiocate;
+	private Double mediaVoto;
 	private ArrayList<Voti> voti = new ArrayList<>();
 	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
 	private String prossimaSquadraAvversaria;
@@ -74,12 +74,12 @@ public class Giocatore {
 		this.quotazioneDiff = quotazioneDiff;
 	}
 
-	public Integer getPartiteGiocate() {
-		return partiteGiocate;
+	public Double getMediaVoto() {
+		return mediaVoto;
 	}
 
-	public void setPartiteGiocate(Integer partiteGiocate) {
-		this.partiteGiocate = partiteGiocate;
+	public void setMediaVoto(Double mediaVoto) {
+		this.mediaVoto = mediaVoto;
 	}
 
 	public ArrayList<Voti> getVoti() {

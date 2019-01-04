@@ -34,8 +34,6 @@ public abstract class Master {
 
 			squadre = Statistiche.calcolaQuotazioni(squadre, fantacalcio);
 
-			squadre = Statistiche.calcolaStatistiche(squadre, fantacalcio);
-
 			squadre = Statistiche.calcolaCalendario(squadre, fantacalcio);
 
 			squadre = Statistiche.calcolaVotiGiornate(squadre, fantacalcio);

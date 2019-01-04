@@ -67,18 +67,22 @@ public class Statistiche {
 								break;
 							}
 						}
+					} else if (indexCol == 4 && findGiocatore) {
+						// squadra di provenienza
+						squadra.getRosa().get(indexGiocatore)
+								.setSquadra(cell.getStringCellValue().toUpperCase().trim());
 					} else if (indexCol == 5 && findGiocatore) {
 						// quotazione attuale
-						squadra.getRosa().get(indexGiocatore)
-								.setQuotazioneAttuale(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
+						squadra.getRosa().get(indexGiocatore).setQuotazioneAttuale(
+								Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
 					} else if (indexCol == 6 && findGiocatore) {
 						// quotazione iniziale
-						squadra.getRosa().get(indexGiocatore)
-								.setQuotazioneIniziale(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
+						squadra.getRosa().get(indexGiocatore).setQuotazioneIniziale(
+								Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
 					} else if (indexCol == 7 && findGiocatore) {
 						// quotazione diff
-						squadra.getRosa().get(indexGiocatore)
-								.setQuotazioneDiff(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
+						squadra.getRosa().get(indexGiocatore).setQuotazioneDiff(
+								Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
 					}
 				}
 			}
@@ -87,71 +91,6 @@ public class Statistiche {
 		inputStream.close();
 
 		System.out.println("Quotazioni giocatori caricate");
-		return squadre;
-	}
-
-	/**
-	 * Cerco il file delle Statistiche e per ogni giocatore verifico i suoi dati.
-	 *
-	 * @param squadre - array delle squadre
-	 * @param path    file
-	 *
-	 * @return array delle squadre aggiornato
-	 *
-	 * @throws Exception
-	 */
-	public static ArrayList<Squadra> calcolaStatistiche(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
-			throws Exception {
-		System.out.println("Caricamento file delle statistiche");
-		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_STATISTICHE);
-		FileInputStream inputStream = new FileInputStream(pathFile);
-
-		System.out.println("Caricamento statistiche: " + pathFile);
-		Workbook workbook = new XSSFWorkbook(inputStream);
-		Sheet sheet = workbook.getSheetAt(0);
-
-		try {
-			for (Squadra squadra : squadre) {
-				Iterator<Row> iterator = sheet.iterator();
-				while (iterator.hasNext()) {
-					Row nextRow = iterator.next();
-					Iterator<Cell> cellIterator = nextRow.cellIterator();
-
-					int indexCol = 0;
-					int indexGiocatore = -1;
-					boolean findGiocatore = false;
-					while (cellIterator.hasNext()) {
-						Cell cell = cellIterator.next();
-						indexCol++;
-						if (indexCol == 3) {
-							// nome giocatore
-							for (Giocatore g : squadra.getRosa()) {
-								if (g.getNome().equals(cell.getStringCellValue().toUpperCase().trim())) {
-									indexGiocatore = squadra.getRosa().indexOf(g);
-									squadra.getRosa().get(indexGiocatore).setSquadraFantacalcio(squadra.getNome());
-									findGiocatore = true;
-									break;
-								}
-							}
-						} else if (indexCol == 4 && findGiocatore) {
-							// squadra di provenienza
-							squadra.getRosa().get(indexGiocatore)
-									.setSquadra(cell.getStringCellValue().toUpperCase().trim());
-						} else if (indexCol == 5 && findGiocatore) {
-							// partite giocate
-							squadra.getRosa().get(indexGiocatore)
-									.setPartiteGiocate(Double.valueOf(cell.getNumericCellValue()).intValue());
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("Errore: " + e);
-		}
-		workbook.close();
-		inputStream.close();
-
-		System.out.println("Statistiche per ogni giocatore caricate");
 		return squadre;
 	}
 
@@ -362,6 +301,22 @@ public class Statistiche {
 						}
 					}
 					g.addVoti(voto);
+
+					// calcolo la media voti
+					int countVoti = 0;
+					if (!g.getVoti().isEmpty()) {
+						Double mediaVoto = 0d;
+						for (Voti v : g.getVoti()) {
+							if (v.getValutazione() != null) {
+								mediaVoto = mediaVoto + v.getValutazione();
+								countVoti++;
+							}
+						}
+
+						if (countVoti > 0) {
+							g.setMediaVoto(mediaVoto / countVoti);
+						}
+					}
 				}
 			}
 			workbook.close();

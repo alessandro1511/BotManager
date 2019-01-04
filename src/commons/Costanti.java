@@ -8,7 +8,6 @@ public class Costanti {
 	public static final String URL_PROBABILI_FORMAZIONI = "https://www.fantagazzetta.com/probabili-formazioni-serie-a";
 
 	public static final String FILE_SQUADRE = "Fantacalcio";
-	public static final String FILE_STATISTICHE = "Statistiche";
 	public static final String FILE_CALENDARIO = "Calendario";
 	public static final String FILE_VOTI = "Voti";
 	public static final String FILE_PROBABILI_FORMAZIONI = "Probabili_Formazioni";

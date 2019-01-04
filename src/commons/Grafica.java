@@ -36,12 +36,13 @@ public class Grafica {
 		int indexSquadra = 2;
 		int indexQuotazioneAtt = 3;
 		int indexQuotazioneDiff = 4;
-		int indexSquadraAvv = 5;
-		int indexCasaTrasf = 6;
-		int indexProb = 7;
+		int indexMediaVoto = 5;
+		int indexSquadraAvv = 6;
+		int indexCasaTrasf = 7;
+		int indexProb = 8;
 
 		// totale colonne principali
-		int totImportantColum = 8;
+		int totImportantColum = 9;
 
 		try {
 			// Create a Sheet Grafici
@@ -58,6 +59,7 @@ public class Grafica {
 				sheet.createFreezePane(indexSquadra + 1, 0);
 				sheet.createFreezePane(indexQuotazioneAtt + 1, 0);
 				sheet.createFreezePane(indexQuotazioneDiff + 1, 0);
+				sheet.createFreezePane(indexMediaVoto + 1, 0);
 				sheet.createFreezePane(indexSquadraAvv + 1, 0);
 				sheet.createFreezePane(indexCasaTrasf + 1, 0);
 				sheet.createFreezePane(indexProb + 1, 0);
@@ -97,6 +99,11 @@ public class Grafica {
 				cellQuotazioneDiff.setCellValue("QD.");
 				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexQuotazioneDiff, "", "Quotazione Diff");
 				cellQuotazioneDiff.setCellStyle(headerCellStyle);
+
+				Cell cellMediaVoto = headerRow.createCell(indexMediaVoto);
+				cellMediaVoto.setCellValue("MV.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexMediaVoto, "", "Media Voto");
+				cellMediaVoto.setCellStyle(headerCellStyle);
 
 				Cell cellSquadraAvv = headerRow.createCell(indexSquadraAvv);
 				cellSquadraAvv.setCellValue("A.");
@@ -166,6 +173,18 @@ public class Grafica {
 					} else {
 						row.createCell(indexQuotazioneDiff).setCellType(CellType.STRING);
 						row.getCell(indexQuotazioneDiff).setCellValue("");
+					}
+
+					// valore della media voto
+					CellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+					if (giocatore.getMediaVoto() != null) {
+						row.createCell(indexMediaVoto).setCellType(CellType.NUMERIC);
+						row.createCell(indexMediaVoto).setCellStyle(cellStyle);
+						row.getCell(indexMediaVoto).setCellValue(giocatore.getMediaVoto());
+					} else {
+						row.createCell(indexMediaVoto).setCellType(CellType.STRING);
+						row.getCell(indexMediaVoto).setCellValue("");
 					}
 
 					// valore prossima squadra avversara e se in casa o transferta
