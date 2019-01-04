@@ -70,7 +70,15 @@ public class Statistiche {
 					} else if (indexCol == 5 && findGiocatore) {
 						// quotazione attuale
 						squadra.getRosa().get(indexGiocatore)
-								.setQuotazioneAttuale(Double.valueOf(cell.getNumericCellValue()).intValue());
+								.setQuotazioneAttuale(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
+					} else if (indexCol == 6 && findGiocatore) {
+						// quotazione iniziale
+						squadra.getRosa().get(indexGiocatore)
+								.setQuotazioneIniziale(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
+					} else if (indexCol == 7 && findGiocatore) {
+						// quotazione diff
+						squadra.getRosa().get(indexGiocatore)
+								.setQuotazioneDiff(Integer.valueOf(Double.valueOf(cell.getNumericCellValue()).intValue()));
 					}
 				}
 			}

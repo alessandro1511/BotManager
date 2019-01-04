@@ -1,6 +1,5 @@
 package commons;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
 import org.apache.poi.ss.usermodel.charts.AxisPosition;
@@ -14,16 +13,10 @@ import org.apache.poi.ss.usermodel.charts.LineChartSeries;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBoolean;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTLineSer;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 
 import dao.Giocatore;
 import dao.Squadra;
-
-import org.apache.poi.ss.usermodel.Comment;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -37,11 +30,18 @@ public class Grafica {
 		// Create a Workbook
 		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
 
-		/*
-		 * CreationHelper helps us create instances of various things like DataFormat,
-		 * Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way
-		 */
-		CreationHelper createHelper = workbook.getCreationHelper();
+		// indice colonne principali
+		int indexGiocatore = 0;
+		int indexRuolo = 1;
+		int indexSquadra = 2;
+		int indexQuotazioneAtt = 3;
+		int indexQuotazioneDiff = 4;
+		int indexSquadraAvv = 5;
+		int indexCasaTrasf = 6;
+		int indexProb = 7;
+
+		// totale colonne principali
+		int totImportantColum = 8;
 
 		try {
 			// Create a Sheet Grafici
@@ -52,14 +52,15 @@ public class Grafica {
 				// Create a Sheet
 				Sheet sheet = workbook.createSheet(squadra.getNome() + "(" + squadra.getAnno() + ")");
 
-				// Freeze le prime 6 colonne
-				sheet.createFreezePane(1, 0);
-				sheet.createFreezePane(2, 0);
-				sheet.createFreezePane(3, 0);
-				sheet.createFreezePane(4, 0);
-				sheet.createFreezePane(5, 0);
-				sheet.createFreezePane(6, 0);
-				sheet.createFreezePane(7, 0);
+				// Freeze le prime 6 colonne (unico caso in cui si parte da 1 e non da 0)
+				sheet.createFreezePane(indexGiocatore + 1, 0);
+				sheet.createFreezePane(indexRuolo + 1, 0);
+				sheet.createFreezePane(indexSquadra + 1, 0);
+				sheet.createFreezePane(indexQuotazioneAtt + 1, 0);
+				sheet.createFreezePane(indexQuotazioneDiff + 1, 0);
+				sheet.createFreezePane(indexSquadraAvv + 1, 0);
+				sheet.createFreezePane(indexCasaTrasf + 1, 0);
+				sheet.createFreezePane(indexProb + 1, 0);
 
 				// Create a Font for styling header cells
 				Font headerFont = workbook.createFont();
@@ -70,92 +71,119 @@ public class Grafica {
 				CellStyle headerCellStyle = workbook.createCellStyle();
 				headerCellStyle.setFont(headerFont);
 
-				// Create a Header Row and Cells
-				Row headerRow = sheet.createRow(0);
-				Cell cell0 = headerRow.createCell(0);
-				cell0.setCellValue("G.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 0, "", "Giocatore");
-				cell0.setCellStyle(headerCellStyle);
+				// Creazione colonne principali
+				Row headerRow = sheet.createRow(indexGiocatore);
+				Cell cellGiocatore = headerRow.createCell(indexGiocatore);
+				cellGiocatore.setCellValue("G.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexGiocatore, "", "Giocatore");
+				cellGiocatore.setCellStyle(headerCellStyle);
 
-				Cell cell1 = headerRow.createCell(1);
-				cell1.setCellValue("R.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 1, "", "Ruolo");
-				cell1.setCellStyle(headerCellStyle);
+				Cell cellRuolo = headerRow.createCell(indexRuolo);
+				cellRuolo.setCellValue("R.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexRuolo, "", "Ruolo");
+				cellRuolo.setCellStyle(headerCellStyle);
 
-				Cell cell2 = headerRow.createCell(2);
-				cell2.setCellValue("S.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 2, "", "Squadra");
-				cell2.setCellStyle(headerCellStyle);
+				Cell cellSquadra = headerRow.createCell(indexSquadra);
+				cellSquadra.setCellValue("S.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadra, "", "Squadra");
+				cellSquadra.setCellStyle(headerCellStyle);
 
-				Cell cell3 = headerRow.createCell(3);
-				cell3.setCellValue("Q.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 3, "", "Quotazione");
-				cell3.setCellStyle(headerCellStyle);
+				Cell cellQuotazioneAtt = headerRow.createCell(indexQuotazioneAtt);
+				cellQuotazioneAtt.setCellValue("QA.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexQuotazioneAtt, "", "Quotazione Attuale");
+				cellQuotazioneAtt.setCellStyle(headerCellStyle);
 
-				Cell cell4 = headerRow.createCell(4);
-				cell4.setCellValue("A.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 4, "", "Squadra Avversaria");
-				cell4.setCellStyle(headerCellStyle);
+				Cell cellQuotazioneDiff = headerRow.createCell(indexQuotazioneDiff);
+				cellQuotazioneDiff.setCellValue("QD.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexQuotazioneDiff, "", "Quotazione Diff");
+				cellQuotazioneDiff.setCellStyle(headerCellStyle);
 
-				Cell cell5 = headerRow.createCell(5);
-				cell5.setCellValue("CoT");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 5, "", "Casa o Trasferta");
-				cell5.setCellStyle(headerCellStyle);
+				Cell cellSquadraAvv = headerRow.createCell(indexSquadraAvv);
+				cellSquadraAvv.setCellValue("A.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadraAvv, "", "Squadra Avversaria");
+				cellSquadraAvv.setCellStyle(headerCellStyle);
 
-				Cell cell6 = headerRow.createCell(6);
-				cell6.setCellValue("P.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), 6, "", "Probabilità di giocare");
-				cell6.setCellStyle(headerCellStyle);
+				Cell cellCasaTrasf = headerRow.createCell(indexCasaTrasf);
+				cellCasaTrasf.setCellValue("CoT");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexCasaTrasf, "", "Casa o Trasferta");
+				cellCasaTrasf.setCellStyle(headerCellStyle);
 
+				Cell cellProb = headerRow.createCell(indexProb);
+				cellProb.setCellValue("P.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexProb, "", "Probabilità di giocare");
+				cellProb.setCellStyle(headerCellStyle);
+
+				// Creazione colonne delle giornate di campionato
 				for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
-					Cell celli = headerRow.createCell(i + 7);
+					Cell celli = headerRow.createCell(i + totImportantColum);
 					if (i == squadra.getProssimaGiornataCampionato() - 1) {
 						celli.setCellValue((i + 1) + "" + (char) 170 + " C");
-						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + 7), "",
+						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + totImportantColum), "",
 								(i + 1) + " Giornata Corrente");
 					} else {
 						celli.setCellValue((i + 1) + "" + (char) 170);
-						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + 7), "", (i + 1) + " Giornata");
+						Utils.addComment(workbook, sheet, headerRow.getRowNum(), (i + totImportantColum), "",
+								(i + 1) + " Giornata");
 					}
 					celli.setCellStyle(headerCellStyle);
 				}
 
-				// Create Cell Style for formatting Date
+				// Inserimento valori per le colonne
 				int rowNum = 1;
 				for (Giocatore giocatore : squadra.getRosa()) {
 					Row row = sheet.createRow(rowNum);
 
-					row.createCell(0).setCellValue(giocatore.getNome());
+					// valore del giocatore
+					row.createCell(indexGiocatore).setCellType(CellType.STRING);
+					row.createCell(indexGiocatore).setCellValue(giocatore.getNome());
 
+					// valore del ruolo
 					String ruoli = "";
 					for (String r : giocatore.getRuoli()) {
 						ruoli = ruoli + r + " ";
 					}
-					row.createCell(1).setCellValue(ruoli);
+					row.createCell(indexRuolo).setCellType(CellType.STRING);
+					row.createCell(indexRuolo).setCellValue(ruoli);
 
-					row.createCell(2).setCellValue(giocatore.getSquadra());
+					// valore della squadra
+					row.createCell(indexSquadra).setCellType(CellType.STRING);
+					row.createCell(indexSquadra).setCellValue(giocatore.getSquadra());
 
+					// valore della quotazione attuale
 					if (giocatore.getQuotazioneAttuale() != null
 							&& giocatore.getQuotazioneAttuale().compareTo(Integer.valueOf(0)) > 0) {
-						row.createCell(3).setCellType(CellType.NUMERIC);
-						row.getCell(3).setCellValue(giocatore.getQuotazioneAttuale().intValue());
+						row.createCell(indexQuotazioneAtt).setCellType(CellType.NUMERIC);
+						row.getCell(indexQuotazioneAtt).setCellValue(giocatore.getQuotazioneAttuale().intValue());
 					} else {
-						row.createCell(3).setCellType(CellType.STRING);
-						row.getCell(3).setCellValue("");
+						row.createCell(indexQuotazioneAtt).setCellType(CellType.STRING);
+						row.getCell(indexQuotazioneAtt).setCellValue("");
 					}
 
-					row.createCell(4).setCellType(CellType.STRING);
-					row.createCell(5).setCellType(CellType.STRING);
+					// valore della quotazione diff
+					if (giocatore.getQuotazioneDiff() != null) {
+						row.createCell(indexQuotazioneDiff).setCellType(CellType.NUMERIC);
+						row.getCell(indexQuotazioneDiff).setCellValue(giocatore.getQuotazioneDiff().intValue());
+					} else {
+						row.createCell(indexQuotazioneDiff).setCellType(CellType.STRING);
+						row.getCell(indexQuotazioneDiff).setCellValue("");
+					}
+
+					// valore prossima squadra avversara e se in casa o transferta
 					if ((squadra.getProssimaGiornataCampionato()) <= giocatore.getCalendarioAvversarie().size()) {
 						giocatore.setProssimaSquadraAvversaria(
 								giocatore.getCalendarioAvversarie().get(squadra.getProssimaGiornataCampionato() - 1));
-						row.getCell(4).setCellValue(giocatore.getProssimaSquadraAvversaria());
-						row.getCell(5).setCellValue(
+						row.createCell(indexSquadraAvv).setCellType(CellType.STRING);
+						row.getCell(indexSquadraAvv).setCellValue(giocatore.getProssimaSquadraAvversaria());
+						row.createCell(indexCasaTrasf).setCellType(CellType.STRING);
+						row.getCell(indexCasaTrasf).setCellValue(
 								giocatore.getCasaTrasferta().get(squadra.getProssimaGiornataCampionato() - 1));
 					}
 
-					row.createCell(6).setCellValue(giocatore.getProbabilitaProssimoIncontro());
+					// valore probabilità di giocare del giocatore
+					row.createCell(indexProb).setCellType(CellType.STRING);
+					row.createCell(indexProb).setCellValue(giocatore.getProbabilitaProssimoIncontro());
 
+					// valore voti singola giornata
 					for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 						String giornata = (i + 1) + "" + (char) 170 + " Giornata\n";
 						if (i < giocatore.getCalendarioAvversarie().size()
@@ -167,17 +195,17 @@ public class Grafica {
 									: "Trasferta");
 						}
 
-						row.createCell(7 + i).setCellType(CellType.NUMERIC);
+						row.createCell(totImportantColum + i).setCellType(CellType.NUMERIC);
 						if (i < giocatore.getVoti().size() && giocatore.getVoti().get(i).getValutazione() != null) {
-							row.getCell(7 + i).setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
+							row.getCell(totImportantColum + i)
+									.setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
 						} else {
-							row.getCell(7 + i).setCellValue(0.0);
+							row.getCell(totImportantColum + i).setCellValue(0.0);
 						}
-						Utils.addComment(workbook, sheet, rowNum, 7 + i, "", giornata.trim());
+						Utils.addComment(workbook, sheet, rowNum, totImportantColum + i, "", giornata.trim());
 					}
 
 					rowNum = rowNum + 1;
-
 				}
 
 				// Resize all columns to fit the content size
@@ -186,7 +214,7 @@ public class Grafica {
 				}
 			}
 
-			// Creazione Grafici
+			// Creazione Grafici solo del primo Sheet
 			int coord = 1;
 			for (Giocatore giocatore : squadre.get(0).getRosa()) {
 				Drawing drawing = sheetGrafici.createDrawingPatriarch();
@@ -203,16 +231,15 @@ public class Grafica {
 				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
 				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
-						new CellRangeAddress(0, 0, 7, 44));
-				for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
+						new CellRangeAddress(0, 0, totImportantColum, 44));
 
-					ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(i),
-							new CellRangeAddress(Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()),
-									Utils.findRow(workbook.getSheetAt(i), giocatore.getNome()), 7, 44));
+				ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
+						new CellRangeAddress(Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()),
+								Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()), totImportantColum, 44));
 
-					LineChartSeries series1 = data.addSeries(asseX, asseY);
-					series1.setTitle(giocatore.getNome() + " [" + workbook.getSheetAt(i).getSheetName() + "]");
-				}
+				LineChartSeries series1 = data.addSeries(asseX, asseY);
+				series1.setTitle(giocatore.getNome() + " [" + workbook.getSheetAt(1).getSheetName() + "]");
+
 				chart.plot(data, bottomAxis, leftAxis);
 				coord = coord + 12;
 			}

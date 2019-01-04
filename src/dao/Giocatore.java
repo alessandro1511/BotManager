@@ -9,6 +9,8 @@ public class Giocatore {
 	private String squadra;
 	private String squadraFantacalcio;
 	private Integer quotazioneAttuale;
+	private Integer quotazioneIniziale;
+	private Integer quotazioneDiff;
 	private Integer partiteGiocate;
 	private ArrayList<Voti> voti = new ArrayList<>();
 	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
@@ -54,6 +56,22 @@ public class Giocatore {
 
 	public void setQuotazioneAttuale(Integer quotazioneAttuale) {
 		this.quotazioneAttuale = quotazioneAttuale;
+	}
+
+	public Integer getQuotazioneIniziale() {
+		return quotazioneIniziale;
+	}
+
+	public void setQuotazioneIniziale(Integer quotazioneIniziale) {
+		this.quotazioneIniziale = quotazioneIniziale;
+	}
+
+	public Integer getQuotazioneDiff() {
+		return quotazioneDiff;
+	}
+
+	public void setQuotazioneDiff(Integer quotazioneDiff) {
+		this.quotazioneDiff = quotazioneDiff;
 	}
 
 	public Integer getPartiteGiocate() {
