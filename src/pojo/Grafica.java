@@ -161,7 +161,9 @@ public class Grafica {
 
 					// valore della squadra
 					row.createCell(indexSquadra).setCellType(CellType.STRING);
-					row.createCell(indexSquadra).setCellValue(giocatore.getSquadra().substring(0, 3));
+					if (giocatore.getSquadra() != null && !giocatore.getSquadra().isEmpty() ) {
+						row.createCell(indexSquadra).setCellValue(giocatore.getSquadra().substring(0, 3));
+					}
 
 					// valore della quotazione attuale
 					if (giocatore.getQuotazioneAttuale() != null

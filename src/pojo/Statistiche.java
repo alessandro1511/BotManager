@@ -380,18 +380,18 @@ public class Statistiche {
 			for (Squadra squadra : squadre) {
 				for (Giocatore g : squadra.getRosa()) {
 
-					if (testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) != -1) {
+					if (testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") != -1) {
 						//Titolare
 						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniTitolari
-								.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
-										testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
+								.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") + g.getNome().length() + 2,
+										testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") + g.getNome().length() + 6)
 								.trim());
-					} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
+					} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " ") != -1) {
 						//Panchina
 						g.getProbabilitaDiGiocare().add(
 								testoSenzaTagSoloFormazioniPanchina
-										.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
-												testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
+										.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " ") - 3,
+												testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " "))
 										.trim());
 					} else {
 						//Non Convocato

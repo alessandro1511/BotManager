@@ -44,7 +44,7 @@ public class Squadre extends BotManager {
 					indexCol++;
 					if (indexCol == 2) // nome giocatore
 					{
-						g.setNome(cell.getStringCellValue().toUpperCase().trim());
+						g.setNome(cell.getStringCellValue().toUpperCase().replaceAll("\\*", "").trim());
 					}
 					if (indexCol == 1) // ruoli
 					{
