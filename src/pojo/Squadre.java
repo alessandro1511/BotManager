@@ -10,9 +10,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import dao.Fantacalcio;
 import dao.Giocatore;
 import dao.Squadra;
-import views.Master;
+import views.BotManager;
 
-public class Squadre extends Master {
+public class Squadre extends BotManager {
 
 	/**
 	 * Carico dal workbook tutte le informazioni delle squadre presenti.

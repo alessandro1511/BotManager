@@ -13,9 +13,9 @@ public class Giocatore {
 	private Integer quotazioneDiff;
 	private Double mediaVoto;
 	private ArrayList<Voti> voti = new ArrayList<>();
+	private ArrayList<String> probabilitaDiGiocare = new ArrayList<>();
 	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
 	private String prossimaSquadraAvversaria;
-	private String probabilitaProssimoIncontro;
 	private ArrayList<String> casaTrasferta = new ArrayList<>();
 
 	public String getNome() {
@@ -126,12 +126,12 @@ public class Giocatore {
 		this.casaTrasferta.add(casaTrasferta);
 	}
 
-	public String getProbabilitaProssimoIncontro() {
-		return probabilitaProssimoIncontro;
+	public ArrayList<String> getProbabilitaDiGiocare() {
+		return probabilitaDiGiocare;
 	}
 
-	public void setProbabilitaProssimoIncontro(String probabilitaProssimoIncontro) {
-		this.probabilitaProssimoIncontro = probabilitaProssimoIncontro;
+	public void setProbabilitaDiGiocare(ArrayList<String> probabilitaDiGiocare) {
+		this.probabilitaDiGiocare = probabilitaDiGiocare;
 	}
 
 }

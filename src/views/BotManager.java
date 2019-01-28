@@ -2,14 +2,14 @@ package views;
 
 import java.util.ArrayList;
 
-import commons.Grafica;
 import commons.Utils;
 import dao.Fantacalcio;
 import dao.Squadra;
+import pojo.Grafica;
 import pojo.Squadre;
 import pojo.Statistiche;
 
-public abstract class Master {
+public abstract class BotManager {
 
 	public static void main(String[] args) throws Exception {
 		try {
@@ -44,7 +44,7 @@ public abstract class Master {
 				squadreGlobali.add(s);
 			}
 		}
-		Grafica.creaFile(squadreGlobali);
 
+		Grafica.creaFile(squadreGlobali, false);
 	}
 }

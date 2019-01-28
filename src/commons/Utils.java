@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -23,9 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dao.Fantacalcio;
-import dao.Giocatore;
-import dao.Squadra;
-import views.Master;
+import views.BotManager;
 
 public class Utils {
 
@@ -78,7 +75,7 @@ public class Utils {
 	}
 
 	public static String jarPath() throws URISyntaxException {
-		String path = Master.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		String path = BotManager.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		if (!path.contains(".jar")) {
 			path = "/home/alessandro.cappelli/Documents/Utility/BotManager/";
 		} else {
@@ -220,7 +217,8 @@ public class Utils {
 		return cell;
 	}
 
-	public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, int colIdx, String author, String commentText) {
+	public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, int colIdx, String author,
+			String commentText) {
 		CreationHelper factory = workbook.getCreationHelper();
 		// get an existing cell or create it otherwise:
 		Cell cell = getOrCreateCell(sheet, rowIdx, colIdx);

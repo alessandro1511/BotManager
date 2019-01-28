@@ -1,4 +1,4 @@
-package commons;
+package pojo;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
@@ -15,6 +15,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import commons.Costanti;
+import commons.Utils;
 import dao.Giocatore;
 import dao.Squadra;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 
 public class Grafica {
 
-	public static void creaFile(ArrayList<Squadra> squadre) throws Exception {
+	public static void creaFile(ArrayList<Squadra> squadre, boolean grafico) throws Exception {
 
 		System.out.println("Caricamento file " + Costanti.FILE_BOT_MANAGER);
 
@@ -46,7 +48,10 @@ public class Grafica {
 
 		try {
 			// Create a Sheet Grafici
-			Sheet sheetGrafici = workbook.createSheet("Grafica");
+			Sheet sheetGrafici = null;
+			if (grafico) {
+				sheetGrafici = workbook.createSheet("Grafica");
+			}
 
 			for (Squadra squadra : squadre) {
 
@@ -199,7 +204,12 @@ public class Grafica {
 
 					// valore probabilità di giocare del giocatore
 					row.createCell(indexProb).setCellType(CellType.STRING);
-					row.createCell(indexProb).setCellValue(giocatore.getProbabilitaProssimoIncontro());
+					if(giocatore.getProbabilitaDiGiocare().size() >= squadra.getProssimaGiornataCampionato()) {
+						row.createCell(indexProb).setCellValue(giocatore.getProbabilitaDiGiocare().get(squadra.getProssimaGiornataCampionato() - 1));
+					} else {
+						row.createCell(indexProb).setCellValue("");
+					}
+
 
 					// valore voti singola giornata
 					for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
@@ -209,7 +219,7 @@ public class Grafica {
 							giornata = giornata + giocatore.getCalendarioAvversarie().get(i) + "\n";
 						}
 						if (i < giocatore.getCasaTrasferta().size() && !giocatore.getCasaTrasferta().get(i).isEmpty()) {
-							giornata = giornata + (giocatore.getCasaTrasferta().get(i).equalsIgnoreCase("C") ? "Casa"
+							giornata = giornata + (giocatore.getCasaTrasferta().get(i).equalsIgnoreCase("Casa") ? "Casa"
 									: "Trasferta");
 						}
 
@@ -233,33 +243,35 @@ public class Grafica {
 			}
 
 			// Creazione Grafici solo del primo Sheet
-			int coord = 1;
-			for (Giocatore giocatore : squadre.get(0).getRosa()) {
-				Drawing drawing = sheetGrafici.createDrawingPatriarch();
-				ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, coord, 18, coord + 12);
+			if (grafico) {
+				int coord = 1;
+				for (Giocatore giocatore : squadre.get(0).getRosa()) {
+					Drawing drawing = sheetGrafici.createDrawingPatriarch();
+					ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, coord, 18, coord + 12);
 
-				Chart chart = drawing.createChart(anchor);
-				ChartLegend legend = chart.getOrCreateLegend();
-				legend.setPosition(LegendPosition.RIGHT);
+					Chart chart = drawing.createChart(anchor);
+					ChartLegend legend = chart.getOrCreateLegend();
+					legend.setPosition(LegendPosition.RIGHT);
 
-				LineChartData data = chart.getChartDataFactory().createLineChartData();
+					LineChartData data = chart.getChartDataFactory().createLineChartData();
 
-				ChartAxis bottomAxis = chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
-				ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
-				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+					ChartAxis bottomAxis = chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
+					ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+					leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
-				ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
-						new CellRangeAddress(0, 0, totImportantColum, 44));
+					ChartDataSource<Number> asseX = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
+							new CellRangeAddress(0, 0, totImportantColum, 44));
 
-				ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
-						new CellRangeAddress(Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()),
-								Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()), totImportantColum, 44));
+					ChartDataSource<Number> asseY = DataSources.fromNumericCellRange(workbook.getSheetAt(1),
+							new CellRangeAddress(Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()),
+									Utils.findRow(workbook.getSheetAt(1), giocatore.getNome()), totImportantColum, 44));
 
-				LineChartSeries series1 = data.addSeries(asseX, asseY);
-				series1.setTitle(giocatore.getNome() + " [" + workbook.getSheetAt(1).getSheetName() + "]");
+					LineChartSeries series1 = data.addSeries(asseX, asseY);
+					series1.setTitle(giocatore.getNome() + " [" + workbook.getSheetAt(1).getSheetName() + "]");
 
-				chart.plot(data, bottomAxis, leftAxis);
-				coord = coord + 12;
+					chart.plot(data, bottomAxis, leftAxis);
+					coord = coord + 12;
+				}
 			}
 		} catch (
 

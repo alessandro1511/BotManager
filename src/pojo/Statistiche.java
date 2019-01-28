@@ -133,9 +133,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									giornateCasaTrasfertaDispari.add("T");
+									giornateCasaTrasfertaDispari.add("Tras");
 								else {
-									giornateCasaTrasfertaDispari.add("C");
+									giornateCasaTrasfertaDispari.add("Casa");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornateDispari.add(avversaria);
@@ -146,9 +146,9 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									giornateCasaTrasfertaPari.add("T");
+									giornateCasaTrasfertaPari.add("Tras");
 								else {
-									giornateCasaTrasfertaPari.add("C");
+									giornateCasaTrasfertaPari.add("Casa");
 								}
 								avversaria = avversaria.replaceAll("-", "");
 								giornatePari.add(avversaria);
@@ -331,72 +331,75 @@ public class Statistiche {
 			throws Exception {
 		System.out.println("Caricamento probabili formazioni");
 
-		String pathFile = Utils.connectionFile(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
-		System.out.println("Caricamento probabili formazioni: " + pathFile);
+		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
 
-		StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
-		StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
+		for(String pathFile : pathFiles) {
+			System.out.println("Caricamento probabili formazioni: " + pathFile);
 
-		try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
-			StringBuilder testo = new StringBuilder();
-			stream.forEach(s -> testo.append(s).append("\n"));
+			StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
+			StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
 
-			if (testo.toString().isEmpty() || testo.toString().length() == 0) {
-				for (Squadra squadra : squadre) {
-					for (Giocatore g : squadra.getRosa()) {
-						g.setProbabilitaProssimoIncontro(null);
+			try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
+				StringBuilder testo = new StringBuilder();
+				stream.forEach(s -> testo.append(s).append("\n"));
+				if (testo.toString().isEmpty() || testo.toString().length() == 0) {
+					for (Squadra squadra : squadre) {
+						for (Giocatore g : squadra.getRosa()) {
+							g.getProbabilitaDiGiocare().add("");
+						}
+					}
+					System.out.println("Probabili formazioni non calcolate, file vuoto");
+					continue;
+				}
+				String testoSenzaTag = Jsoup.parse(testo.toString()).text();
+
+				while (testoSenzaTag.indexOf("TITOLARI") != -1) {
+					testoSenzaTagSoloFormazioniTitolari.append(testoSenzaTag
+							.substring(testoSenzaTag.indexOf("TITOLARI") + 9, testoSenzaTag.indexOf("PANCHINA")))
+							.append("\n");
+
+					testoSenzaTagSoloFormazioniPanchina
+							.append(testoSenzaTag.substring(testoSenzaTag.indexOf("PANCHINA") + 9,
+									testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI")))
+							.append("\n");
+
+					if (testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") != -1) {
+						testoSenzaTag = testoSenzaTag.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
 					}
 				}
-				System.out.println("Probabili formazioni non calcolate, file vuoto");
-				return squadre;
+			} catch (IOException e) {
+				System.out.println("Errore calcolo probabili formazioni");
 			}
 
-			String testoSenzaTag = Jsoup.parse(testo.toString()).text();
+			System.out.println("TITOLARI");
+			System.out.print(testoSenzaTagSoloFormazioniTitolari.toString());
+			System.out.println("PANCHINA");
+			System.out.print(testoSenzaTagSoloFormazioniPanchina.toString());
+			System.out.println("Probabili formazioni caricate");
 
-			while (testoSenzaTag.indexOf("TITOLARI") != -1) {
-				testoSenzaTagSoloFormazioniTitolari.append(testoSenzaTag
-						.substring(testoSenzaTag.indexOf("TITOLARI") + 9, testoSenzaTag.indexOf("PANCHINA")))
-						.append("\n");
+			for (Squadra squadra : squadre) {
+				for (Giocatore g : squadra.getRosa()) {
 
-				testoSenzaTagSoloFormazioniPanchina
-						.append(testoSenzaTag.substring(testoSenzaTag.indexOf("PANCHINA") + 9,
-								testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI")))
-						.append("\n");
-
-				if (testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") != -1) {
-					testoSenzaTag = testoSenzaTag.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
-				}
-			}
-		} catch (IOException e) {
-			System.out.println("Errore calcolo probabili formazioni");
-		}
-
-		System.out.println("TITOLARI");
-		System.out.print(testoSenzaTagSoloFormazioniTitolari.toString());
-		System.out.println("PANCHINA");
-		System.out.print(testoSenzaTagSoloFormazioniPanchina.toString());
-		System.out.println("Probabili formazioni caricate");
-
-		for (Squadra squadra : squadre) {
-			for (Giocatore g : squadra.getRosa()) {
-
-				if (testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) != -1) {
-					g.setProbabilitaProssimoIncontro(testoSenzaTagSoloFormazioniTitolari
-							.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
-									testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
-							.trim() + " Titolare");
-				} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
-					g.setProbabilitaProssimoIncontro(
-							testoSenzaTagSoloFormazioniPanchina
-									.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
-											testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
-									.trim() + " Panchina");
-				} else {
-					g.setProbabilitaProssimoIncontro(null);
+					if (testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) != -1) {
+						//Titolare
+						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniTitolari
+								.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length(),
+										testoSenzaTagSoloFormazioniTitolari.indexOf(g.getNome()) + g.getNome().length() + 4)
+								.trim());
+					} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) != -1) {
+						//Panchina
+						g.getProbabilitaDiGiocare().add(
+								testoSenzaTagSoloFormazioniPanchina
+										.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()) - 4,
+												testoSenzaTagSoloFormazioniPanchina.indexOf(g.getNome()))
+										.trim());
+					} else {
+						//Non Convocato
+						g.getProbabilitaDiGiocare().add("0%");
+					}
 				}
 			}
 		}
-
 		return squadre;
 	}
 
