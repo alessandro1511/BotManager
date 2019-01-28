@@ -1,5 +1,7 @@
 package pojo;
 
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
 import org.apache.poi.ss.usermodel.charts.AxisPosition;
@@ -159,7 +161,7 @@ public class Grafica {
 
 					// valore della squadra
 					row.createCell(indexSquadra).setCellType(CellType.STRING);
-					row.createCell(indexSquadra).setCellValue(giocatore.getSquadra());
+					row.createCell(indexSquadra).setCellValue(giocatore.getSquadra().substring(0, 3));
 
 					// valore della quotazione attuale
 					if (giocatore.getQuotazioneAttuale() != null
@@ -196,7 +198,8 @@ public class Grafica {
 						giocatore.setProssimaSquadraAvversaria(
 								giocatore.getCalendarioAvversarie().get(squadra.getProssimaGiornataCampionato() - 1));
 						row.createCell(indexSquadraAvv).setCellType(CellType.STRING);
-						row.getCell(indexSquadraAvv).setCellValue(giocatore.getProssimaSquadraAvversaria());
+						row.getCell(indexSquadraAvv)
+								.setCellValue(giocatore.getProssimaSquadraAvversaria().substring(0, 3));
 						row.createCell(indexCasaTrasf).setCellType(CellType.STRING);
 						row.getCell(indexCasaTrasf).setCellValue(
 								giocatore.getCasaTrasferta().get(squadra.getProssimaGiornataCampionato() - 1));
@@ -204,14 +207,17 @@ public class Grafica {
 
 					// valore probabilità di giocare del giocatore
 					row.createCell(indexProb).setCellType(CellType.STRING);
-					if(giocatore.getProbabilitaDiGiocare().size() >= squadra.getProssimaGiornataCampionato()) {
-						row.createCell(indexProb).setCellValue(giocatore.getProbabilitaDiGiocare().get(squadra.getProssimaGiornataCampionato() - 1));
+					if (giocatore.getProbabilitaDiGiocare().size() >= squadra.getProssimaGiornataCampionato()) {
+						row.createCell(indexProb).setCellValue(
+								giocatore.getProbabilitaDiGiocare().get(squadra.getProssimaGiornataCampionato() - 1));
 					} else {
 						row.createCell(indexProb).setCellValue("");
 					}
 
-
 					// valore voti singola giornata
+					CellStyle cellStyleVoti = workbook.createCellStyle();
+					cellStyleVoti.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+					cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 						String giornata = (i + 1) + "" + (char) 170 + " Giornata\n";
 						if (i < giocatore.getCalendarioAvversarie().size()
@@ -229,6 +235,11 @@ public class Grafica {
 									.setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
 						} else {
 							row.getCell(totImportantColum + i).setCellValue(0.0);
+							if (i < giocatore.getProbabilitaDiGiocare().size()
+									&& giocatore.getProbabilitaDiGiocare().get(i) != null
+									&& giocatore.getProbabilitaDiGiocare().get(i).equalsIgnoreCase("0%")) {
+								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
+							}
 						}
 						Utils.addComment(workbook, sheet, rowNum, totImportantColum + i, "", giornata.trim());
 					}
