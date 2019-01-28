@@ -28,38 +28,36 @@ public class Squadre extends BotManager {
 		System.out.println("Caricamento squadre");
 
 		for (Sheet sheet : fantacalcio.getWorkbook()) {
-			if (sheet.getSheetName().toUpperCase().startsWith("FORMAZIONE")) {
-				Squadra squadra = new Squadra();
+			Squadra squadra = new Squadra();
 
-				//nome squadra
-				squadra.setNome(sheet.getSheetName());
-				squadra.setAnno(fantacalcio.getAnno());
-				Iterator<Row> iterator = sheet.iterator();
-				while (iterator.hasNext()) {
-					Row nextRow = iterator.next();
-					Iterator<Cell> cellIterator = nextRow.cellIterator();
-					int indexCol = 0;
-					Giocatore g = new Giocatore();
-					while (cellIterator.hasNext()) {
-						Cell cell = cellIterator.next();
-						indexCol++;
-						if (indexCol == 2) // nome giocatore
-						{
-							g.setNome(cell.getStringCellValue().toUpperCase().trim());
-						}
-						if (indexCol == 1) // ruoli
-						{
-							if (!cell.getStringCellValue().toUpperCase().trim().contains(";"))
-								g.getRuoli().add(cell.getStringCellValue().toUpperCase().trim()); // ruolo
-							else
-								for (String r : cell.getStringCellValue().toUpperCase().trim().split(";"))
-									g.getRuoli().add(r.trim()); // ruoli
-						}
+			// nome squadra
+			squadra.setNome(sheet.getSheetName());
+			squadra.setAnno(fantacalcio.getAnno());
+			Iterator<Row> iterator = sheet.iterator();
+			while (iterator.hasNext()) {
+				Row nextRow = iterator.next();
+				Iterator<Cell> cellIterator = nextRow.cellIterator();
+				int indexCol = 0;
+				Giocatore g = new Giocatore();
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					indexCol++;
+					if (indexCol == 2) // nome giocatore
+					{
+						g.setNome(cell.getStringCellValue().toUpperCase().trim());
 					}
-					squadra.getRosa().add(g);
+					if (indexCol == 1) // ruoli
+					{
+						if (!cell.getStringCellValue().toUpperCase().trim().contains(";"))
+							g.getRuoli().add(cell.getStringCellValue().toUpperCase().trim()); // ruolo
+						else
+							for (String r : cell.getStringCellValue().toUpperCase().trim().split(";"))
+								g.getRuoli().add(r.trim()); // ruoli
+					}
 				}
-				squadre.add(squadra);
+				squadra.getRosa().add(g);
 			}
+			squadre.add(squadra);
 		}
 		fantacalcio.getWorkbook().close();
 

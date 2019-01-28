@@ -58,7 +58,7 @@ public class Grafica {
 			for (Squadra squadra : squadre) {
 
 				// Create a Sheet
-				Sheet sheet = workbook.createSheet(squadra.getNome() + "(" + squadra.getAnno() + ")");
+				Sheet sheet = workbook.createSheet(squadra.getNome() + " (" + squadra.getAnno() + ")");
 
 				// Freeze le prime 6 colonne (unico caso in cui si parte da 1 e non da 0)
 				sheet.createFreezePane(indexGiocatore + 1, 0);
