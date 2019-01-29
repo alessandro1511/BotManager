@@ -333,7 +333,7 @@ public class Statistiche {
 
 		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
 
-		for(String pathFile : pathFiles) {
+		for (String pathFile : pathFiles) {
 			System.out.println("Caricamento probabili formazioni: " + pathFile);
 
 			StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
@@ -364,7 +364,8 @@ public class Statistiche {
 							.append("\n");
 
 					if (testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") != -1) {
-						testoSenzaTag = testoSenzaTag.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
+						testoSenzaTag = testoSenzaTag
+								.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
 					}
 				}
 			} catch (IOException e) {
@@ -380,21 +381,19 @@ public class Statistiche {
 			for (Squadra squadra : squadre) {
 				for (Giocatore g : squadra.getRosa()) {
 
-					if (testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") != -1) {
-						//Titolare
+					String name = " " + g.getNome() + " ";
+					int nameTitolareIndex = testoSenzaTagSoloFormazioniTitolari.indexOf(name);
+					int namePanchinaIndex = testoSenzaTagSoloFormazioniPanchina.indexOf(name);
+					if (nameTitolareIndex != -1) {
+						// Titolare
 						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniTitolari
-								.substring(testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") + g.getNome().length() + 2,
-										testoSenzaTagSoloFormazioniTitolari.indexOf(" " + g.getNome() + " ") + g.getNome().length() + 6)
-								.trim());
-					} else if (testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " ") != -1) {
-						//Panchina
-						g.getProbabilitaDiGiocare().add(
-								testoSenzaTagSoloFormazioniPanchina
-										.substring(testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " ") - 3,
-												testoSenzaTagSoloFormazioniPanchina.indexOf(" " + g.getNome() + " "))
-										.trim());
+								.substring(nameTitolareIndex + name.length(), nameTitolareIndex + name.length() + 3).trim());
+					} else if (namePanchinaIndex != -1) {
+						// Panchina
+						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniPanchina
+								.substring(namePanchinaIndex - 3, namePanchinaIndex).trim());
 					} else {
-						//Non Convocato
+						// Non Convocato
 						g.getProbabilitaDiGiocare().add("0%");
 					}
 				}
