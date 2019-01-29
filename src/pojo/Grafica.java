@@ -1,5 +1,6 @@
 package pojo;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.*;
@@ -161,7 +162,7 @@ public class Grafica {
 
 					// valore della squadra
 					row.createCell(indexSquadra).setCellType(CellType.STRING);
-					if (giocatore.getSquadra() != null && !giocatore.getSquadra().isEmpty() ) {
+					if (giocatore.getSquadra() != null && !giocatore.getSquadra().isEmpty()) {
 						row.createCell(indexSquadra).setCellValue(giocatore.getSquadra().substring(0, 3));
 					}
 
@@ -216,10 +217,6 @@ public class Grafica {
 						row.createCell(indexProb).setCellValue("");
 					}
 
-					// valore voti singola giornata
-					CellStyle cellStyleVoti = workbook.createCellStyle();
-					cellStyleVoti.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-					cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 						String giornata = (i + 1) + "" + (char) 170 + " Giornata\n";
 						if (i < giocatore.getCalendarioAvversarie().size()
@@ -233,13 +230,44 @@ public class Grafica {
 
 						row.createCell(totImportantColum + i).setCellType(CellType.NUMERIC);
 						if (i < giocatore.getVoti().size() && giocatore.getVoti().get(i).getValutazione() != null) {
-							row.getCell(totImportantColum + i)
-									.setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
+
+							// valore voti singola giornata
+							CellStyle cellStyleVoti = workbook.createCellStyle();
+
+							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("IN")) {
+								cellStyleVoti.setBorderRight(BorderStyle.DOUBLE);
+								cellStyleVoti.setRightBorderColor(IndexedColors.GREEN.getIndex());
+								cellStyleVoti.setBorderTop(BorderStyle.DOUBLE);
+								cellStyleVoti.setTopBorderColor(IndexedColors.GREEN.getIndex());
+							}
+							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("OUT")) {
+								cellStyleVoti.setBorderLeft(BorderStyle.DOUBLE);
+								cellStyleVoti.setLeftBorderColor(IndexedColors.RED.getIndex());
+								cellStyleVoti.setBorderBottom(BorderStyle.DOUBLE);
+								cellStyleVoti.setBottomBorderColor(IndexedColors.RED.getIndex());
+							}
+							if (giocatore.getVoti().get(i).getAmmunizioni().intValue() > 0) {
+								cellStyleVoti.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+							}
+							if (giocatore.getVoti().get(i).getEspulsioni().intValue() > 0) {
+								cellStyleVoti.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+							}
+							if (giocatore.getVoti().get(i).getGolFatti().intValue() > 0) {
+								cellStyleVoti.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+							}
+							row.getCell(totImportantColum + i).setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
+							row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
 						} else {
 							row.getCell(totImportantColum + i).setCellValue(0.0);
 							if (i < giocatore.getProbabilitaDiGiocare().size()
 									&& giocatore.getProbabilitaDiGiocare().get(i) != null
 									&& giocatore.getProbabilitaDiGiocare().get(i).equalsIgnoreCase("0%")) {
+								CellStyle cellStyleVoti = workbook.createCellStyle();
+								cellStyleVoti.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
 							}
 						}

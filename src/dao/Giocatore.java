@@ -13,6 +13,7 @@ public class Giocatore {
 	private Integer quotazioneDiff;
 	private Double mediaVoto;
 	private ArrayList<Voti> voti = new ArrayList<>();
+	private ArrayList<String> sostituzioni = new ArrayList<>();
 	private ArrayList<String> probabilitaDiGiocare = new ArrayList<>();
 	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
 	private String prossimaSquadraAvversaria;
@@ -132,6 +133,14 @@ public class Giocatore {
 
 	public void setProbabilitaDiGiocare(ArrayList<String> probabilitaDiGiocare) {
 		this.probabilitaDiGiocare = probabilitaDiGiocare;
+	}
+
+	public ArrayList<String> getSostituzioni() {
+		return sostituzioni;
+	}
+
+	public void setSostituzioni(ArrayList<String> sostituzioni) {
+		this.sostituzioni = sostituzioni;
 	}
 
 }

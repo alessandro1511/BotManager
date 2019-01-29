@@ -334,7 +334,7 @@ public class Statistiche {
 		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
 
 		for (String pathFile : pathFiles) {
-			System.out.println("Caricamento probabili formazioni: " + pathFile);
+			System.out.println("Caricamento file probabili formazioni: " + pathFile);
 
 			StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
 			StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
@@ -387,7 +387,8 @@ public class Statistiche {
 					if (nameTitolareIndex != -1) {
 						// Titolare
 						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniTitolari
-								.substring(nameTitolareIndex + name.length(), nameTitolareIndex + name.length() + 3).trim());
+								.substring(nameTitolareIndex + name.length(), nameTitolareIndex + name.length() + 3)
+								.trim());
 					} else if (namePanchinaIndex != -1) {
 						// Panchina
 						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniPanchina
@@ -395,6 +396,60 @@ public class Statistiche {
 					} else {
 						// Non Convocato
 						g.getProbabilitaDiGiocare().add("0%");
+					}
+				}
+			}
+		}
+		return squadre;
+	}
+
+	public static ArrayList<Squadra> calcolaSostituzioni(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
+			throws Exception {
+		System.out.println("Caricamento sostituzioni");
+
+		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_SOSTITUZIONI);
+
+		for (String pathFile : pathFiles) {
+			System.out.println("Caricamento file sostituzioni: " + pathFile);
+
+			String testoHtml = "";
+
+			try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
+				StringBuilder testo = new StringBuilder();
+				stream.forEach(s -> testo.append(s).append("\n"));
+				if (testo.toString().isEmpty() || testo.toString().length() == 0) {
+					for (Squadra squadra : squadre) {
+						for (Giocatore g : squadra.getRosa()) {
+							g.getSostituzioni().add("");
+						}
+					}
+					System.out.println("Sostituzioni non calcolate, file vuoto");
+					continue;
+				}
+
+				testoHtml = testo.toString();
+
+			} catch (IOException e) {
+				System.out.println("Errore calcolo sostituzioni");
+			}
+
+			for (Squadra squadra : squadre) {
+				for (Giocatore g : squadra.getRosa()) {
+
+					int nameIndex = testoHtml.indexOf(">" + g.getNome() + "</a>");
+					if (nameIndex != -1) {
+						// Sostituito
+						String sostituzione = testoHtml.substring(nameIndex + g.getNome().length(), nameIndex + 150);
+						if (sostituzione.contains("arrow-left")) {
+							g.getSostituzioni().add("in");
+						} else if (sostituzione.contains("arrow-right")) {
+							g.getSostituzioni().add("out");
+						} else {
+							g.getSostituzioni().add("");
+						}
+					} else {
+						// Non Sostituito
+						g.getSostituzioni().add("");
 					}
 				}
 			}
