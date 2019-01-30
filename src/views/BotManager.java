@@ -47,6 +47,6 @@ public abstract class BotManager {
 			}
 		}
 
-		Grafica.creaFile(squadreGlobali, false);
+		Grafica.creaFile(squadreGlobali, false, false);
 	}
 }

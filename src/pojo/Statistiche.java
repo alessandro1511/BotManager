@@ -234,7 +234,7 @@ public class Statistiche {
 									cell = cellIterator.next(); // colum 4
 									cell.setCellType(CellType.STRING);
 									if ((String.valueOf(cell.getStringCellValue())).contains("*"))
-										voto.setVoto(Double.valueOf(6));
+										voto.setVoto(Double.valueOf(0));
 									else
 										voto.setVoto(Double.valueOf(cell.getStringCellValue()));
 

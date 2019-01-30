@@ -1,8 +1,5 @@
 package pojo;
 
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
 import org.apache.poi.ss.usermodel.charts.AxisPosition;
@@ -28,7 +25,7 @@ import java.util.ArrayList;
 
 public class Grafica {
 
-	public static void creaFile(ArrayList<Squadra> squadre, boolean grafico) throws Exception {
+	public static void creaFile(ArrayList<Squadra> squadre, boolean grafico, boolean comment) throws Exception {
 
 		System.out.println("Caricamento file " + Costanti.FILE_BOT_MANAGER);
 
@@ -233,18 +230,13 @@ public class Grafica {
 
 							// valore voti singola giornata
 							CellStyle cellStyleVoti = workbook.createCellStyle();
-
+//							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("OUT")) {
+//								cellStyleVoti.setBorderRight(BorderStyle.THICK);
+//								cellStyleVoti.setRightBorderColor(IndexedColors.RED.getIndex());
+//							}
 							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("IN")) {
-								cellStyleVoti.setBorderRight(BorderStyle.DOUBLE);
+								cellStyleVoti.setBorderRight(BorderStyle.THICK);
 								cellStyleVoti.setRightBorderColor(IndexedColors.GREEN.getIndex());
-								cellStyleVoti.setBorderTop(BorderStyle.DOUBLE);
-								cellStyleVoti.setTopBorderColor(IndexedColors.GREEN.getIndex());
-							}
-							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("OUT")) {
-								cellStyleVoti.setBorderLeft(BorderStyle.DOUBLE);
-								cellStyleVoti.setLeftBorderColor(IndexedColors.RED.getIndex());
-								cellStyleVoti.setBorderBottom(BorderStyle.DOUBLE);
-								cellStyleVoti.setBottomBorderColor(IndexedColors.RED.getIndex());
 							}
 							if (giocatore.getVoti().get(i).getAmmunizioni().intValue() > 0) {
 								cellStyleVoti.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
@@ -255,10 +247,11 @@ public class Grafica {
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 							}
 							if (giocatore.getVoti().get(i).getGolFatti().intValue() > 0) {
-								cellStyleVoti.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+								cellStyleVoti.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 							}
-							row.getCell(totImportantColum + i).setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
+							row.getCell(totImportantColum + i)
+									.setCellValue(giocatore.getVoti().get(i).getValutazione().doubleValue());
 							row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
 						} else {
 							row.getCell(totImportantColum + i).setCellValue(0.0);
@@ -271,7 +264,9 @@ public class Grafica {
 								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
 							}
 						}
-						Utils.addComment(workbook, sheet, rowNum, totImportantColum + i, "", giornata.trim());
+						if (comment) {
+							Utils.addComment(workbook, sheet, rowNum, totImportantColum + i, "", giornata.trim());
+						}
 					}
 
 					rowNum = rowNum + 1;
