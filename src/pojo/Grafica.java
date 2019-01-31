@@ -259,6 +259,11 @@ public class Grafica {
 									&& giocatore.getProbabilitaDiGiocare().get(i) != null
 									&& giocatore.getProbabilitaDiGiocare().get(i).equalsIgnoreCase("0%")) {
 								CellStyle cellStyleVoti = workbook.createCellStyle();
+								cellStyleVoti.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
+								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
+							} else {
+								CellStyle cellStyleVoti = workbook.createCellStyle();
 								cellStyleVoti.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
