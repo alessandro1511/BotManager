@@ -36,15 +36,16 @@ public class Grafica {
 		int indexGiocatore = 0;
 		int indexRuolo = 1;
 		int indexSquadra = 2;
-		int indexQuotazioneAtt = 3;
-		int indexQuotazioneDiff = 4;
-		int indexMediaVoto = 5;
-		int indexSquadraAvv = 6;
-		int indexCasaTrasf = 7;
-		int indexProb = 8;
+		int indexSquadraFantacalcio = 3;
+		int indexQuotazioneAtt = 4;
+		int indexQuotazioneDiff = 5;
+		int indexMediaVoto = 6;
+		int indexSquadraAvv = 7;
+		int indexCasaTrasf = 8;
+		int indexProb = 9;
 
 		// totale colonne principali
-		int totImportantColum = 9;
+		int totImportantColum = 10;
 
 		try {
 			// Create a Sheet Grafici
@@ -62,6 +63,7 @@ public class Grafica {
 				sheet.createFreezePane(indexGiocatore + 1, 0);
 				sheet.createFreezePane(indexRuolo + 1, 0);
 				sheet.createFreezePane(indexSquadra + 1, 0);
+				sheet.createFreezePane(indexSquadraFantacalcio + 1, 0);
 				sheet.createFreezePane(indexQuotazioneAtt + 1, 0);
 				sheet.createFreezePane(indexQuotazioneDiff + 1, 0);
 				sheet.createFreezePane(indexMediaVoto + 1, 0);
@@ -94,6 +96,11 @@ public class Grafica {
 				cellSquadra.setCellValue("S.");
 				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadra, "", "Squadra");
 				cellSquadra.setCellStyle(headerCellStyle);
+
+				Cell cellSquadraFantacalcio = headerRow.createCell(indexSquadraFantacalcio);
+				cellSquadraFantacalcio.setCellValue("SF.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadraFantacalcio, "", "Squadra Fantacalcio");
+				cellSquadraFantacalcio.setCellStyle(headerCellStyle);
 
 				Cell cellQuotazioneAtt = headerRow.createCell(indexQuotazioneAtt);
 				cellQuotazioneAtt.setCellValue("QA.");
@@ -161,6 +168,12 @@ public class Grafica {
 					row.createCell(indexSquadra).setCellType(CellType.STRING);
 					if (giocatore.getSquadra() != null && !giocatore.getSquadra().isEmpty()) {
 						row.createCell(indexSquadra).setCellValue(giocatore.getSquadra().substring(0, 3));
+					}
+
+					// valore della squadra fantacalcio
+					row.createCell(indexSquadraFantacalcio).setCellType(CellType.STRING);
+					if (giocatore.getSquadraFantacalcio() != null && !giocatore.getSquadraFantacalcio().isEmpty()) {
+						row.createCell(indexSquadraFantacalcio).setCellValue(giocatore.getSquadraFantacalcio());
 					}
 
 					// valore della quotazione attuale

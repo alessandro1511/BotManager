@@ -42,20 +42,32 @@ public class Squadre extends BotManager {
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
 					indexCol++;
-					if (indexCol == 2) // nome giocatore
-					{
+
+					// nome giocatore
+					if (indexCol == 2) {
 						g.setNome(cell.getStringCellValue().toUpperCase().replaceAll("\\*", "").trim());
 					}
-					if (indexCol == 1) // ruoli
-					{
+
+					// ruoli
+					if (indexCol == 1) {
+
 						if (!cell.getStringCellValue().toUpperCase().trim().contains(";"))
-							g.getRuoli().add(cell.getStringCellValue().toUpperCase().trim()); // ruolo
+							g.getRuoli().add(cell.getStringCellValue().toUpperCase().trim()); // singolo ruolo
 						else
 							for (String r : cell.getStringCellValue().toUpperCase().trim().split(";"))
-								g.getRuoli().add(r.trim()); // ruoli
+								g.getRuoli().add(r.trim()); // multi ruolo
+					}
+
+					// nome squadra fantacalcio
+					if (indexCol == 3) {
+						g.setSquadraFantacalcio(cell.getStringCellValue().toUpperCase().trim());
 					}
 				}
-				squadra.getRosa().add(g);
+
+				// aggiungo il giocatore se presente
+				if (g.getNome() != null && !g.getNome().isEmpty()) {
+					squadra.getRosa().add(g);
+				}
 			}
 			squadre.add(squadra);
 		}
