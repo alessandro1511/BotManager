@@ -99,7 +99,8 @@ public class Grafica {
 
 				Cell cellSquadraFantacalcio = headerRow.createCell(indexSquadraFantacalcio);
 				cellSquadraFantacalcio.setCellValue("SF.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadraFantacalcio, "", "Squadra Fantacalcio");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadraFantacalcio, "",
+						"Squadra Fantacalcio");
 				cellSquadraFantacalcio.setCellStyle(headerCellStyle);
 
 				Cell cellQuotazioneAtt = headerRow.createCell(indexQuotazioneAtt);
@@ -259,7 +260,8 @@ public class Grafica {
 								cellStyleVoti.setFillForegroundColor(IndexedColors.CORAL.getIndex());
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 							}
-							if (giocatore.getVoti().get(i).getGolFatti().intValue() > 0) {
+							if (giocatore.getVoti().get(i).getGolFatti().intValue() > 0
+									|| giocatore.getVoti().get(i).getRigoreFatto().intValue() > 0) {
 								cellStyleVoti.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 							}
