@@ -302,19 +302,40 @@ public class Statistiche {
 					}
 					g.addVoti(voto);
 
-					// calcolo la media voti
 					int countVoti = 0;
+					int countVotiUltimoMese = 0;
 					if (!g.getVoti().isEmpty()) {
 						Double mediaVoto = 0d;
+						Double mediaVotoUltimoMese = 0d;
+						g.setMercatoRiparazione("Si");
 						for (Voti v : g.getVoti()) {
+							// calcolo la media voti
 							if (v.getValutazione() != null) {
 								mediaVoto = mediaVoto + v.getValutazione();
 								countVoti++;
+
+								//calcolo la media voto sell'ultimo mese
+								if (g.getVoti().indexOf(v) > g.getVoti().size()-6) {
+									mediaVotoUltimoMese = mediaVotoUltimoMese + v.getValutazione();
+									countVotiUltimoMese++;
+								}
+
+								// se ha giocato delle partite nella prima parte del campionato non e' stato
+								// aquistato nel mercato di Gennaio
+								if (g.getVoti().indexOf(v) < 16) {
+									g.setMercatoRiparazione("No");
+								}
 							}
 						}
 
 						if (countVoti > 0) {
 							g.setMediaVoto(mediaVoto / countVoti);
+						}
+						if (countVotiUltimoMese > 0) {
+							g.setMediaVotoUltimoMese(mediaVotoUltimoMese / countVotiUltimoMese);
+						}
+						if (countVoti == 0) {
+							g.setMercatoRiparazione("No");
 						}
 					}
 				}

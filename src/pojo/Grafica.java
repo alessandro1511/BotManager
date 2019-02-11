@@ -39,13 +39,15 @@ public class Grafica {
 		int indexSquadraFantacalcio = 3;
 		int indexQuotazioneAtt = 4;
 		int indexQuotazioneDiff = 5;
-		int indexMediaVoto = 6;
-		int indexSquadraAvv = 7;
-		int indexCasaTrasf = 8;
-		int indexProb = 9;
+		int indexMercatoRiparazione = 6;
+		int indexMediaVoto = 7;
+		int indexMediaVotoUltimoMese = 8;
+		int indexSquadraAvv = 9;
+		int indexCasaTrasf = 10;
+		int indexProb = 11;
 
 		// totale colonne principali
-		int totImportantColum = 10;
+		int totImportantColum = 12;
 
 		try {
 			// Create a Sheet Grafici
@@ -66,7 +68,9 @@ public class Grafica {
 				sheet.createFreezePane(indexSquadraFantacalcio + 1, 0);
 				sheet.createFreezePane(indexQuotazioneAtt + 1, 0);
 				sheet.createFreezePane(indexQuotazioneDiff + 1, 0);
+				sheet.createFreezePane(indexMercatoRiparazione + 1, 0);
 				sheet.createFreezePane(indexMediaVoto + 1, 0);
+				sheet.createFreezePane(indexMediaVotoUltimoMese + 1, 0);
 				sheet.createFreezePane(indexSquadraAvv + 1, 0);
 				sheet.createFreezePane(indexCasaTrasf + 1, 0);
 				sheet.createFreezePane(indexProb + 1, 0);
@@ -113,10 +117,20 @@ public class Grafica {
 				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexQuotazioneDiff, "", "Quotazione Diff");
 				cellQuotazioneDiff.setCellStyle(headerCellStyle);
 
+				Cell cellGiocatoreMercatoRiparazione = headerRow.createCell(indexMercatoRiparazione);
+				cellGiocatoreMercatoRiparazione.setCellValue("MR.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexMercatoRiparazione, "", "Nuovo Giocatore Mercato di Riparazione");
+				cellGiocatoreMercatoRiparazione.setCellStyle(headerCellStyle);
+
 				Cell cellMediaVoto = headerRow.createCell(indexMediaVoto);
 				cellMediaVoto.setCellValue("MV.");
 				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexMediaVoto, "", "Media Voto");
 				cellMediaVoto.setCellStyle(headerCellStyle);
+
+				Cell cellMediaVotoUltimoMese = headerRow.createCell(indexMediaVotoUltimoMese);
+				cellMediaVotoUltimoMese.setCellValue("MUM.");
+				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexMediaVotoUltimoMese, "", "Media Voto Ultimo Mese");
+				cellMediaVotoUltimoMese.setCellStyle(headerCellStyle);
 
 				Cell cellSquadraAvv = headerRow.createCell(indexSquadraAvv);
 				cellSquadraAvv.setCellValue("A.");
@@ -196,6 +210,10 @@ public class Grafica {
 						row.getCell(indexQuotazioneDiff).setCellValue("");
 					}
 
+					// nuobo giocatore mercato di riparazione
+					row.createCell(indexMercatoRiparazione).setCellType(CellType.STRING);
+					row.createCell(indexMercatoRiparazione).setCellValue(giocatore.getMercatoRiparazione());
+
 					// valore della media voto
 					CellStyle cellStyle = workbook.createCellStyle();
 					cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
@@ -205,6 +223,15 @@ public class Grafica {
 						row.getCell(indexMediaVoto).setCellValue(giocatore.getMediaVoto());
 					} else {
 						row.getCell(indexMediaVoto).setCellValue(0);
+					}
+
+					// valore della media voto dell'ultimo mese
+					row.createCell(indexMediaVotoUltimoMese).setCellType(CellType.NUMERIC);
+					row.createCell(indexMediaVotoUltimoMese).setCellStyle(cellStyle);
+					if (giocatore.getMediaVotoUltimoMese() != null) {
+						row.getCell(indexMediaVotoUltimoMese).setCellValue(giocatore.getMediaVotoUltimoMese());
+					} else {
+						row.getCell(indexMediaVotoUltimoMese).setCellValue(0);
 					}
 
 					// valore prossima squadra avversara e se in casa o transferta

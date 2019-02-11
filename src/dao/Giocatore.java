@@ -12,6 +12,8 @@ public class Giocatore {
 	private Integer quotazioneIniziale;
 	private Integer quotazioneDiff;
 	private Double mediaVoto;
+	private Double mediaVotoUltimoMese;
+	private String mercatoRiparazione;
 	private ArrayList<Voti> voti = new ArrayList<>();
 	private ArrayList<String> sostituzioni = new ArrayList<>();
 	private ArrayList<String> probabilitaDiGiocare = new ArrayList<>();
@@ -81,6 +83,22 @@ public class Giocatore {
 
 	public void setMediaVoto(Double mediaVoto) {
 		this.mediaVoto = mediaVoto;
+	}
+
+	public Double getMediaVotoUltimoMese() {
+		return mediaVotoUltimoMese;
+	}
+
+	public void setMediaVotoUltimoMese(Double mediaVotoUltimoMese) {
+		this.mediaVotoUltimoMese = mediaVotoUltimoMese;
+	}
+
+	public String getMercatoRiparazione() {
+		return mercatoRiparazione;
+	}
+
+	public void setMercatoRiparazione(String mercatoRiparazione) {
+		this.mercatoRiparazione = mercatoRiparazione;
 	}
 
 	public ArrayList<Voti> getVoti() {
