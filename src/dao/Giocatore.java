@@ -15,11 +15,6 @@ public class Giocatore {
 	private Double mediaVotoUltimoMese;
 	private String mercatoRiparazione;
 	private ArrayList<Voti> voti = new ArrayList<>();
-	private ArrayList<String> sostituzioni = new ArrayList<>();
-	private ArrayList<String> probabilitaDiGiocare = new ArrayList<>();
-	private ArrayList<String> calendarioAvversarie = new ArrayList<>();
-	private String prossimaSquadraAvversaria;
-	private ArrayList<String> casaTrasferta = new ArrayList<>();
 
 	public String getNome() {
 		return nome;
@@ -111,54 +106,6 @@ public class Giocatore {
 
 	public void addVoti(Voti voti) {
 		this.voti.add(voti);
-	}
-
-	public ArrayList<String> getCalendarioAvversarie() {
-		return calendarioAvversarie;
-	}
-
-	public void setCalendarioAvversarie(ArrayList<String> calendarioAvversarie) {
-		this.calendarioAvversarie = calendarioAvversarie;
-	}
-
-	public void addCalendarioAvversaria(String avversaria) {
-		this.calendarioAvversarie.add(avversaria);
-	}
-
-	public String getProssimaSquadraAvversaria() {
-		return prossimaSquadraAvversaria;
-	}
-
-	public void setProssimaSquadraAvversaria(String prossimaSquadraAvversaria) {
-		this.prossimaSquadraAvversaria = prossimaSquadraAvversaria;
-	}
-
-	public ArrayList<String> getCasaTrasferta() {
-		return casaTrasferta;
-	}
-
-	public void setCasaTrasferta(ArrayList<String> casaTrasferta) {
-		this.casaTrasferta = casaTrasferta;
-	}
-
-	public void addCasaTrasferta(String casaTrasferta) {
-		this.casaTrasferta.add(casaTrasferta);
-	}
-
-	public ArrayList<String> getProbabilitaDiGiocare() {
-		return probabilitaDiGiocare;
-	}
-
-	public void setProbabilitaDiGiocare(ArrayList<String> probabilitaDiGiocare) {
-		this.probabilitaDiGiocare = probabilitaDiGiocare;
-	}
-
-	public ArrayList<String> getSostituzioni() {
-		return sostituzioni;
-	}
-
-	public void setSostituzioni(ArrayList<String> sostituzioni) {
-		this.sostituzioni = sostituzioni;
 	}
 
 }

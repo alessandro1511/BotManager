@@ -38,10 +38,6 @@ public abstract class BotManager {
 
 			squadre = Statistiche.calcolaVotiGiornate(squadre, fantacalcio);
 
-			squadre = Statistiche.calcolaProbabiliFormazioni(squadre, fantacalcio);
-
-			squadre = Statistiche.calcolaSostituzioni(squadre, fantacalcio);
-
 			for (Squadra s : squadre) {
 				squadreGlobali.add(s);
 			}

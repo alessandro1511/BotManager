@@ -1,6 +1,20 @@
 package pojo;
 
-import org.apache.poi.ss.usermodel.*;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Chart;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
 import org.apache.poi.ss.usermodel.charts.AxisPosition;
 import org.apache.poi.ss.usermodel.charts.ChartAxis;
@@ -11,7 +25,6 @@ import org.apache.poi.ss.usermodel.charts.LegendPosition;
 import org.apache.poi.ss.usermodel.charts.LineChartData;
 import org.apache.poi.ss.usermodel.charts.LineChartSeries;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -19,9 +32,6 @@ import commons.Costanti;
 import commons.Utils;
 import dao.Giocatore;
 import dao.Squadra;
-
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 public class Grafica {
 
@@ -42,12 +52,9 @@ public class Grafica {
 		int indexMercatoRiparazione = 6;
 		int indexMediaVoto = 7;
 		int indexMediaVotoUltimoMese = 8;
-		int indexSquadraAvv = 9;
-		int indexCasaTrasf = 10;
-		int indexProb = 11;
 
 		// totale colonne principali
-		int totImportantColum = 12;
+		int totImportantColum = 9;
 
 		try {
 			// Create a Sheet Grafici
@@ -71,9 +78,6 @@ public class Grafica {
 				sheet.createFreezePane(indexMercatoRiparazione + 1, 0);
 				sheet.createFreezePane(indexMediaVoto + 1, 0);
 				sheet.createFreezePane(indexMediaVotoUltimoMese + 1, 0);
-				sheet.createFreezePane(indexSquadraAvv + 1, 0);
-				sheet.createFreezePane(indexCasaTrasf + 1, 0);
-				sheet.createFreezePane(indexProb + 1, 0);
 
 				// Create a Font for styling header cells
 				Font headerFont = workbook.createFont();
@@ -131,21 +135,6 @@ public class Grafica {
 				cellMediaVotoUltimoMese.setCellValue("MUM.");
 				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexMediaVotoUltimoMese, "", "Media Voto Ultimo Mese");
 				cellMediaVotoUltimoMese.setCellStyle(headerCellStyle);
-
-				Cell cellSquadraAvv = headerRow.createCell(indexSquadraAvv);
-				cellSquadraAvv.setCellValue("A.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexSquadraAvv, "", "Squadra Avversaria");
-				cellSquadraAvv.setCellStyle(headerCellStyle);
-
-				Cell cellCasaTrasf = headerRow.createCell(indexCasaTrasf);
-				cellCasaTrasf.setCellValue("CoT");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexCasaTrasf, "", "Casa o Trasferta");
-				cellCasaTrasf.setCellStyle(headerCellStyle);
-
-				Cell cellProb = headerRow.createCell(indexProb);
-				cellProb.setCellValue("P.");
-				Utils.addComment(workbook, sheet, headerRow.getRowNum(), indexProb, "", "Probabilità di giocare");
-				cellProb.setCellStyle(headerCellStyle);
 
 				// Creazione colonne delle giornate di campionato
 				for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
@@ -234,51 +223,14 @@ public class Grafica {
 						row.getCell(indexMediaVotoUltimoMese).setCellValue(0);
 					}
 
-					// valore prossima squadra avversara e se in casa o transferta
-					if ((squadra.getProssimaGiornataCampionato()) <= giocatore.getCalendarioAvversarie().size()) {
-						giocatore.setProssimaSquadraAvversaria(
-								giocatore.getCalendarioAvversarie().get(squadra.getProssimaGiornataCampionato() - 1));
-						row.createCell(indexSquadraAvv).setCellType(CellType.STRING);
-						row.getCell(indexSquadraAvv)
-								.setCellValue(giocatore.getProssimaSquadraAvversaria().substring(0, 3));
-						row.createCell(indexCasaTrasf).setCellType(CellType.STRING);
-						row.getCell(indexCasaTrasf).setCellValue(
-								giocatore.getCasaTrasferta().get(squadra.getProssimaGiornataCampionato() - 1));
-					}
-
-					// valore probabilità di giocare del giocatore
-					row.createCell(indexProb).setCellType(CellType.STRING);
-					if (giocatore.getProbabilitaDiGiocare().size() >= squadra.getProssimaGiornataCampionato()) {
-						row.createCell(indexProb).setCellValue(
-								giocatore.getProbabilitaDiGiocare().get(squadra.getProssimaGiornataCampionato() - 1));
-					} else {
-						row.createCell(indexProb).setCellValue("");
-					}
-
 					for (int i = 0; i < squadra.getGiornateCampionato(); i++) {
 						String giornata = (i + 1) + "" + (char) 170 + " Giornata\n";
-						if (i < giocatore.getCalendarioAvversarie().size()
-								&& !giocatore.getCalendarioAvversarie().get(i).isEmpty()) {
-							giornata = giornata + giocatore.getCalendarioAvversarie().get(i) + "\n";
-						}
-						if (i < giocatore.getCasaTrasferta().size() && !giocatore.getCasaTrasferta().get(i).isEmpty()) {
-							giornata = giornata + (giocatore.getCasaTrasferta().get(i).equalsIgnoreCase("Casa") ? "Casa"
-									: "Trasferta");
-						}
 
 						row.createCell(totImportantColum + i).setCellType(CellType.NUMERIC);
 						if (i < giocatore.getVoti().size() && giocatore.getVoti().get(i).getValutazione() != null) {
 
 							// valore voti singola giornata
 							CellStyle cellStyleVoti = workbook.createCellStyle();
-//							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("OUT")) {
-//								cellStyleVoti.setBorderRight(BorderStyle.THICK);
-//								cellStyleVoti.setRightBorderColor(IndexedColors.RED.getIndex());
-//							}
-							if (giocatore.getSostituzioni().get(i).equalsIgnoreCase("IN")) {
-								cellStyleVoti.setBorderRight(BorderStyle.THICK);
-								cellStyleVoti.setRightBorderColor(IndexedColors.GREEN.getIndex());
-							}
 							if (giocatore.getVoti().get(i).getAmmunizioni().intValue() > 0) {
 								cellStyleVoti.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -297,19 +249,6 @@ public class Grafica {
 							row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
 						} else {
 							row.getCell(totImportantColum + i).setCellValue(0.0);
-							if (i < giocatore.getProbabilitaDiGiocare().size()
-									&& giocatore.getProbabilitaDiGiocare().get(i) != null
-									&& giocatore.getProbabilitaDiGiocare().get(i).equalsIgnoreCase("0%")) {
-								CellStyle cellStyleVoti = workbook.createCellStyle();
-								cellStyleVoti.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
-								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
-							} else {
-								CellStyle cellStyleVoti = workbook.createCellStyle();
-								cellStyleVoti.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-								cellStyleVoti.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-								row.getCell(totImportantColum + i).setCellStyle(cellStyleVoti);
-							}
 						}
 						if (comment) {
 							Utils.addComment(workbook, sheet, rowNum, totImportantColum + i, "", giornata.trim());

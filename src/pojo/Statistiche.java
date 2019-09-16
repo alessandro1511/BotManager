@@ -1,13 +1,8 @@
 package pojo;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -15,7 +10,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jsoup.Jsoup;
 
 import commons.Costanti;
 import commons.Utils;
@@ -117,10 +111,8 @@ public class Statistiche {
 		for (Squadra squadra : squadre) {
 			for (Giocatore g : squadra.getRosa()) {
 				Iterator<Row> iterator = sheet.iterator();
-				ArrayList<String> giornateDispari = new ArrayList<>();
-				ArrayList<String> giornateCasaTrasfertaDispari = new ArrayList<>();
-				ArrayList<String> giornatePari = new ArrayList<>();
-				ArrayList<String> giornateCasaTrasfertaPari = new ArrayList<>();
+				ArrayList<String> giornateAvversaria = new ArrayList<>();
+				ArrayList<String> giornateCasaTrasferta = new ArrayList<>();
 				while (iterator.hasNext()) {
 					Row nextRow = iterator.next();
 					Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -133,25 +125,12 @@ public class Statistiche {
 								String avversaria = cell.getStringCellValue().toUpperCase().trim()
 										.replaceAll(g.getSquadra(), "");
 								if (avversaria.endsWith("-"))
-									giornateCasaTrasfertaDispari.add("Trasf");
+									giornateCasaTrasferta.add("Trasf");
 								else {
-									giornateCasaTrasfertaDispari.add("Casa");
+									giornateCasaTrasferta.add("Casa");
 								}
 								avversaria = avversaria.replaceAll("-", "");
-								giornateDispari.add(avversaria);
-							}
-
-							if (cell.getColumnIndex() == 3 && g.getSquadra() != null && !g.getSquadra().isEmpty()
-									&& cell.getStringCellValue().toUpperCase().trim().contains(g.getSquadra())) {
-								String avversaria = cell.getStringCellValue().toUpperCase().trim()
-										.replaceAll(g.getSquadra(), "");
-								if (avversaria.endsWith("-"))
-									giornateCasaTrasfertaPari.add("Trasf");
-								else {
-									giornateCasaTrasfertaPari.add("Casa");
-								}
-								avversaria = avversaria.replaceAll("-", "");
-								giornatePari.add(avversaria);
+								giornateAvversaria.add(avversaria);
 							}
 						} catch (Exception e) {
 							System.out.println("Errore calcola calendario: " + cell.getStringCellValue() + " squadra: "
@@ -161,23 +140,8 @@ public class Statistiche {
 				}
 
 				if (squadra.getGiornateCampionato() == 0) {
-					squadra.setGiornateCampionato(giornateDispari.size() + giornatePari.size());
+					squadra.setGiornateCampionato(giornateAvversaria.size());
 				}
-
-				int index = 0;
-				while (index < giornateDispari.size() && index < giornatePari.size()) {
-
-					if (index < giornateDispari.size()) {
-						g.addCalendarioAvversaria(giornateDispari.get(index));
-						g.addCasaTrasferta(giornateCasaTrasfertaDispari.get(index));
-					}
-					if (index < giornatePari.size()) {
-						g.addCalendarioAvversaria(giornatePari.get(index));
-						g.addCasaTrasferta(giornateCasaTrasfertaPari.get(index));
-					}
-					index++;
-				}
-
 			}
 		}
 		workbook.close();
@@ -345,136 +309,6 @@ public class Statistiche {
 		}
 
 		System.out.println("Voti per ogni giocatore caricate");
-		return squadre;
-	}
-
-	public static ArrayList<Squadra> calcolaProbabiliFormazioni(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
-			throws Exception {
-		System.out.println("Caricamento probabili formazioni");
-
-		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_PROBABILI_FORMAZIONI);
-
-		for (String pathFile : pathFiles) {
-			System.out.println("Caricamento file probabili formazioni: " + pathFile);
-
-			StringBuilder testoSenzaTagSoloFormazioniTitolari = new StringBuilder();
-			StringBuilder testoSenzaTagSoloFormazioniPanchina = new StringBuilder();
-
-			try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
-				StringBuilder testo = new StringBuilder();
-				stream.forEach(s -> testo.append(s).append("\n"));
-				if (testo.toString().isEmpty() || testo.toString().length() == 0) {
-					for (Squadra squadra : squadre) {
-						for (Giocatore g : squadra.getRosa()) {
-							g.getProbabilitaDiGiocare().add("");
-						}
-					}
-					System.out.println("Probabili formazioni non calcolate, file vuoto");
-					continue;
-				}
-				String testoSenzaTag = Jsoup.parse(testo.toString()).text();
-
-				while (testoSenzaTag.indexOf("TITOLARI") != -1) {
-					testoSenzaTagSoloFormazioniTitolari.append(testoSenzaTag
-							.substring(testoSenzaTag.indexOf("TITOLARI") + 9, testoSenzaTag.indexOf("PANCHINA")))
-							.append("\n");
-
-					testoSenzaTagSoloFormazioniPanchina
-							.append(testoSenzaTag.substring(testoSenzaTag.indexOf("PANCHINA") + 9,
-									testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI")))
-							.append("\n");
-
-					if (testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") != -1) {
-						testoSenzaTag = testoSenzaTag
-								.substring(testoSenzaTag.indexOf("ALTRI CALCIATORI SQUALIFICATI") + 1);
-					}
-				}
-			} catch (IOException e) {
-				System.out.println("Errore calcolo probabili formazioni");
-			}
-
-			System.out.println("TITOLARI");
-			System.out.print(testoSenzaTagSoloFormazioniTitolari.toString());
-			System.out.println("PANCHINA");
-			System.out.print(testoSenzaTagSoloFormazioniPanchina.toString());
-			System.out.println("Probabili formazioni caricate");
-
-			for (Squadra squadra : squadre) {
-				for (Giocatore g : squadra.getRosa()) {
-
-					String name = " " + g.getNome() + " ";
-					int nameTitolareIndex = testoSenzaTagSoloFormazioniTitolari.indexOf(name);
-					int namePanchinaIndex = testoSenzaTagSoloFormazioniPanchina.indexOf(name);
-					if (nameTitolareIndex != -1) {
-						// Titolare
-						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniTitolari
-								.substring(nameTitolareIndex + name.length(), nameTitolareIndex + name.length() + 3)
-								.trim());
-					} else if (namePanchinaIndex != -1) {
-						// Panchina
-						g.getProbabilitaDiGiocare().add(testoSenzaTagSoloFormazioniPanchina
-								.substring(namePanchinaIndex - 3, namePanchinaIndex).trim());
-					} else {
-						// Non Convocato
-						g.getProbabilitaDiGiocare().add("0%");
-					}
-				}
-			}
-		}
-		return squadre;
-	}
-
-	public static ArrayList<Squadra> calcolaSostituzioni(ArrayList<Squadra> squadre, Fantacalcio fantacalcio)
-			throws Exception {
-		System.out.println("Caricamento sostituzioni");
-
-		ArrayList<String> pathFiles = Utils.connectionFiles(fantacalcio.getPath(), Costanti.FILE_SOSTITUZIONI);
-
-		for (String pathFile : pathFiles) {
-			System.out.println("Caricamento file sostituzioni: " + pathFile);
-
-			String testoHtml = "";
-
-			try (Stream<String> stream = Files.lines(Paths.get(pathFile), StandardCharsets.UTF_8)) {
-				StringBuilder testo = new StringBuilder();
-				stream.forEach(s -> testo.append(s).append("\n"));
-				if (testo.toString().isEmpty() || testo.toString().length() == 0) {
-					for (Squadra squadra : squadre) {
-						for (Giocatore g : squadra.getRosa()) {
-							g.getSostituzioni().add("");
-						}
-					}
-					System.out.println("Sostituzioni non calcolate, file vuoto");
-					continue;
-				}
-
-				testoHtml = testo.toString();
-
-			} catch (IOException e) {
-				System.out.println("Errore calcolo sostituzioni");
-			}
-
-			for (Squadra squadra : squadre) {
-				for (Giocatore g : squadra.getRosa()) {
-
-					int nameIndex = testoHtml.indexOf(">" + g.getNome() + "</a>");
-					if (nameIndex != -1) {
-						// Sostituito
-						String sostituzione = testoHtml.substring(nameIndex + g.getNome().length(), nameIndex + 150);
-						if (sostituzione.contains("arrow-left")) {
-							g.getSostituzioni().add("in");
-						} else if (sostituzione.contains("arrow-right")) {
-							g.getSostituzioni().add("out");
-						} else {
-							g.getSostituzioni().add("");
-						}
-					} else {
-						// Non Sostituito
-						g.getSostituzioni().add("");
-					}
-				}
-			}
-		}
 		return squadre;
 	}
 
